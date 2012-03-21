@@ -1,6 +1,8 @@
-import fields
 
+import fields
+import raster
 import arcpy as _arcpy
+
 
 def getParametersAsText():
     """ Returns list of all arcpy parameters as text
