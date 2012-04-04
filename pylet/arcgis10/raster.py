@@ -10,7 +10,7 @@ import arcpy as _arcpy
 def getRasterPointFromRowColumn(raster, row, column):
     """ From raster object and zero based row,column starting at upper left, return point object 
     
-        raster:  arcpy raser object
+        raster:  arcpy raster object
         row:  zero based row index (starting at upper left)
         column:  zero based column index (starting at upper left)
         
