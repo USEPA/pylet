@@ -13,6 +13,6 @@ Contacts
 Rose-Marie Moore, moore.rose-marie@epa.gov
 Donald Ebert, ebert.donald@epa.gov
 Michael Jackson, jackson.michael@epa.gov
-Caroline Erickson, ericson.carolyn@epa.gov
+Caroline Erickson, erickson.caroline@epa.gov
 
 
