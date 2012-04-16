@@ -1,25 +1,20 @@
-# arcpyh.py
-# Michael A. Jackson - jackson.michael@epa.gov, majgis@gmail.com
-# 2011-09-22
+""" arcpy helper functions specific to fields
 
-"""
-arcpy helper
-
-System Requirements:
-    ArcGIS 10.0 (Python 2.6)
     
 """
 
-def getSortedFieldMappings(arcpy, tablePath, putTheseFirst):
+import os
+import arcpy
+
+def getSortedFieldMappings(tablePath, putTheseFirst):
     """ Return sorted field mappings of the given table
 
-        arcpy: instance of arcpy module
         tablePath:  Path to a table
         putTheseFirst: list of field names to put first; order is matched
         
         Example usage:
         
-            fieldMappings = arcpyh.getSortedFieldMappings(arcpy, inTablePath, putTheseFirst)
+            fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
             arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)
         
     """
@@ -53,4 +48,29 @@ def getSortedFieldMappings(arcpy, tablePath, putTheseFirst):
 
     return fieldMappings
 
+
+def GetFieldNameSizeLimit(outTablePath):
+    """ Return the maximum size of output field names based on the output table's destination/type.
+    
+        outTablePath: Full path to output table
+    
+        Returns:  Integer
+            64  -  file and personal geodatabases
+            10  -  dBASE tables
+            16  -  INFO tables 
+    
+    """
+        
+    outTablePath, outTableName = os.path.split(outTablePath)
+   
+    if outTablePath[-3:].lower() == "gdb":
+        maxFNameSize = 64 # ESRI maximum for File Geodatabases
+    elif outTablePath[-3:].lower() == "mdb":
+        maxFNameSize = 64 # ESRI maximum for Personal Geodatabases
+    elif outTableName[-3:].lower() == "dbf":
+        maxFNameSize = 10 # maximum for dBASE tables
+    else:
+        maxFNameSize = 16 # maximum for INFO tables
+        
+    return maxFNameSize
 
