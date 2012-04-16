@@ -64,28 +64,28 @@ def getFieldNameSizeLimit(outTablePath):
     outTablePath, outTableName = os.path.split(outTablePath)
    
     if outTablePath[-3:].lower() == "gdb":
-        maxFNameSize = 64 # ESRI maximum for File Geodatabases
+        maxFieldNameSize = 64 # ESRI maximum for File Geodatabases
     elif outTablePath[-3:].lower() == "mdb":
-        maxFNameSize = 64 # ESRI maximum for Personal Geodatabases
+        maxFieldNameSize = 64 # ESRI maximum for Personal Geodatabases
     elif outTableName[-3:].lower() == "dbf":
-        maxFNameSize = 10 # maximum for dBASE tables
+        maxFieldNameSize = 10 # maximum for dBASE tables
     else:
-        maxFNameSize = 16 # maximum for INFO tables
+        maxFieldNameSize = 16 # maximum for INFO tables
         
-    return maxFNameSize
+    return maxFieldNameSize
 
 
-def deleteField(theTable, fieldName):
-    """ Delete the supplied field if it exists in the table. 
+def deleteField(inTable, fieldName):
+    """ Delete the supplied field if it exists in the inTable. 
     
-        theTable:  Full path to table
+        inTable:  input inTable to delete field from, either full path or arcpy inTable object
         fieldName:  name of the field to delete
         
     """
-    newFieldsList = arcpy.ListFields(theTable)
+    newFieldsList = arcpy.ListFields(inTable)
     for nFld in newFieldsList:
         if nFld.name.lower() == fieldName.lower(): 
-            arcpy.DeleteField_management(theTable, nFld.name)
+            arcpy.DeleteField_management(inTable, nFld.name)
             break
         
     return
