@@ -49,7 +49,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
     return fieldMappings
 
 
-def GetFieldNameSizeLimit(outTablePath):
+def getFieldNameSizeLimit(outTablePath):
     """ Return the maximum size of output field names based on the output table's destination/type.
     
         outTablePath: Full path to output table
@@ -74,3 +74,18 @@ def GetFieldNameSizeLimit(outTablePath):
         
     return maxFNameSize
 
+
+def deleteField(theTable, fieldName):
+    """ Delete the supplied field if it exists in the table. 
+    
+        theTable:  Full path to table
+        fieldName:  name of the field to delete
+        
+    """
+    newFieldsList = arcpy.ListFields(theTable)
+    for nFld in newFieldsList:
+        if nFld.name.lower() == fieldName.lower(): 
+            arcpy.DeleteField_management(theTable, nFld.name)
+            break
+        
+    return
