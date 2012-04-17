@@ -39,7 +39,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
                 if inFieldName == fieldName:
                     if putTheseFirstIndex != fieldMapsIndex:
                         fieldMaps.insert(putTheseFirstIndex, fieldMaps.pop(fieldMapsIndex))
-                    break;
+                    break
 
     fieldMappings.removeAll()
     
@@ -49,7 +49,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
     return fieldMappings
 
 
-def GetFieldNameSizeLimit(outTablePath):
+def getFieldNameSizeLimit(outTablePath):
     """ Return the maximum size of output field names based on the output table's destination/type.
     
         outTablePath: Full path to output table
@@ -64,13 +64,47 @@ def GetFieldNameSizeLimit(outTablePath):
     outTablePath, outTableName = os.path.split(outTablePath)
    
     if outTablePath[-3:].lower() == "gdb":
-        maxFNameSize = 64 # ESRI maximum for File Geodatabases
+        maxFieldNameSize = 64 # ESRI maximum for File Geodatabases
     elif outTablePath[-3:].lower() == "mdb":
-        maxFNameSize = 64 # ESRI maximum for Personal Geodatabases
+        maxFieldNameSize = 64 # ESRI maximum for Personal Geodatabases
     elif outTableName[-3:].lower() == "dbf":
-        maxFNameSize = 10 # maximum for dBASE tables
+        maxFieldNameSize = 10 # maximum for dBASE tables
     else:
-        maxFNameSize = 16 # maximum for INFO tables
+        maxFieldNameSize = 16 # maximum for INFO tables
         
-    return maxFNameSize
+    return maxFieldNameSize
+
+
+def deleteField(inTable, fieldName):
+    """ Delete the supplied field if it exists in the inTable. 
+    
+        inTable:  input inTable to delete field from, either full path or arcpy inTable object
+        fieldName:  name of the field to delete
+        
+    """
+    newFieldsList = arcpy.ListFields(inTable)
+    for nFld in newFieldsList:
+        if nFld.name.lower() == fieldName.lower(): 
+            arcpy.DeleteField_management(inTable, nFld.name)
+            break
+        
+    return
+
+
+def getFieldObjectByName(inTable, fieldName):
+    """ Get the arcpy field object with the given name 
+    
+        inTable: input table or feature class to retrieve field object from
+        fieldName:  the name of the field
+        
+    """
+    
+    idField = None
+    for field in arcpy.ListFields(inTable):
+        if field.name == fieldName:
+            idField = field
+            break
+        
+    return idField
+
 
