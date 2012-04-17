@@ -7,15 +7,27 @@ import os
 import arcpy
 
 def getSortedFieldMappings(tablePath, putTheseFirst):
-    """ Return sorted field mappings of the given table
+    """ Returns the sorted field mappings of the given table
 
-        tablePath:  Path to a table
-        putTheseFirst: list of field names to put first; order is matched
+        DESCRIPTION
+        -----------
+        Given a path to a table or feature class, a fieldmappings object is returned
+        with fields sorted.  Fields specified in putTheseFirst list are put at the
+        start in the same order specified.
         
-        Example usage:
+        PARAMETERS
+        ----------
+        tablePath:  Path to a table or feature class with fields you wish to sort
+        putTheseFirst: list of field names to put first, order of fields is matched
         
-            fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
-            arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)
+        RETURNS
+        -------
+        arcpy FieldMappings object
+        
+        EXAMPLE OF USAGE
+        ----------------
+        fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
+        arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)
         
     """
     
