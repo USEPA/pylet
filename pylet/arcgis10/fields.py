@@ -39,7 +39,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
                 if inFieldName == fieldName:
                     if putTheseFirstIndex != fieldMapsIndex:
                         fieldMaps.insert(putTheseFirstIndex, fieldMaps.pop(fieldMapsIndex))
-                    break;
+                    break
 
     fieldMappings.removeAll()
     
@@ -89,3 +89,22 @@ def deleteField(inTable, fieldName):
             break
         
     return
+
+
+def getFieldObjectByName(inTable, fieldName):
+    """ Get the arcpy field object with the given name 
+    
+        inTable: input table or feature class to retrieve field object from
+        fieldName:  the name of the field
+        
+    """
+    
+    idField = None
+    for field in arcpy.ListFields(inTable):
+        if field.name == fieldName:
+            idField = field
+            break
+        
+    return idField
+
+
