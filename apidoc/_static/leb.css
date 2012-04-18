@@ -1,0 +1,84 @@
+@import url("sphinxdoc.css");
+
+/*Package or module name at top of page*/
+h1 
+{
+    margin: 0;
+    padding: 0.7em 0 0.3em 0;
+    font-size: 3em;
+
+}
+
+/*Set margin between classes*/
+.class
+{
+	margin-bottom: 50px;
+	margin-top: 50px
+}
+
+/*Set margin between functions*/
+.function
+{
+	margin-bottom: 50px;
+	margin-top: 50px
+}
+
+/*Set margin between methods*/
+.method
+{
+	margin-bottom: 20px;
+	margin-top: 20px
+}
+
+/*Settings for class name, inherited by all class members, so must be overridden below*/
+.class tt
+{
+	font-size: 1.8em;
+	color: #660000;
+	
+}
+
+/*Settings for name following Bases:*/
+tt.xref 
+{
+	font-size: 1em;
+	
+}
+
+/*Settings for method name*/
+.method tt
+{
+	font-size: 1.4em;
+	color: black;
+
+}
+
+/*Settings for function name*/
+.function tt
+{
+	font-size: 1.4em;
+	color: black;
+
+}
+
+/*Settings for attribute name*/
+.attribute tt 
+{
+	font-size: 1em;
+	color: #005500;
+}
+
+/*Spacing between docstring lines*/
+p 
+{
+	line-height: 1.2em; 
+}
+
+
+
+
+
+
+
+
+
