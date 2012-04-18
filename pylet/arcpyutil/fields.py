@@ -1,5 +1,6 @@
-""" arcpy helper functions specific to fields
+""" ArcGIS 10 helper functions specific to fields
 
+    This module contains functions and classes which act upon tabular fields within the context of ArcGIS 10
     
 """
 
@@ -7,25 +8,18 @@ import os
 import arcpy
 
 def getSortedFieldMappings(tablePath, putTheseFirst):
-    """ Returns the sorted field mappings of the given table
+    """ Get the sorted field mappings of the given table.
 
-        DESCRIPTION
-        -----------
-        Given a path to a table or feature class, a fieldmappings object is returned
-        with fields sorted.  Fields specified in putTheseFirst list are put at the
-        start in the same order specified.
+        Given a path to a table or feature class, an arcpy FieldMappings object is returned with fields sorted.  
+        Fields specified in putTheseFirst list are put at the start in the same order specified.
         
-        PARAMETERS
-        ----------
-        tablePath:  Path to a table or feature class with fields you wish to sort
-        putTheseFirst: list of field names to put first, order of fields is matched
+        tablePath:  path to a table or feature class with fields you wish to sort  
+        putTheseFirst: list of field names to put first; order of fields is matched  
         
-        RETURNS
-        -------
-        arcpy FieldMappings object
         
-        EXAMPLE OF USAGE
-        ----------------
+        Returns:  arcpy FieldMappings object
+        
+        Example of usage:
         fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
         arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)
         
@@ -55,6 +49,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
 
     fieldMappings.removeAll()
     
+    # Assemble each fieldMap into FieldMappings object
     for fieldMap in fieldMaps:
         fieldMappings.addFieldMap(fieldMap)
 
@@ -62,24 +57,34 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
 
 
 def getFieldNameSizeLimit(outTablePath):
-    """ Return the maximum size of output field names based on the output table's destination/type.
+    """ Return the maximum size of output field names.
     
+        DESCRIPTION
+        The value returned is based on the output table's destination/type.  Destination and type are determined by
+        parsing the 
+        
+        PARAMETERS
         outTablePath: Full path to output table
-    
-        Returns:  Integer
+        
+        RETURNS
+        Integer:
             64  -  file and personal geodatabases
-            10  -  dBASE tables
+            10  -  dBASE tables (.dbf and .shp)
             16  -  INFO tables 
     
-    """
+
+    """    
         
     outTablePath, outTableName = os.path.split(outTablePath)
-   
-    if outTablePath[-3:].lower() == "gdb":
+    
+    folderExtension = outTablePath[-3:].lower()
+    fileExtension = outTableName[-3:].lower()
+    
+    if  folderExtension == "gdb" :
         maxFieldNameSize = 64 # ESRI maximum for File Geodatabases
-    elif outTablePath[-3:].lower() == "mdb":
+    elif folderExtension == "mdb":
         maxFieldNameSize = 64 # ESRI maximum for Personal Geodatabases
-    elif outTableName[-3:].lower() == "dbf":
+    elif fileExtension == "dbf" or fileExtension == "shp":
         maxFieldNameSize = 10 # maximum for dBASE tables
     else:
         maxFieldNameSize = 16 # maximum for INFO tables
@@ -88,12 +93,12 @@ def getFieldNameSizeLimit(outTablePath):
 
 
 def deleteField(inTable, fieldName):
-    """ Delete the supplied field if it exists in the inTable. 
+    """ Delete the supplied field if it exists in the input table. 
     
-        inTable:  input inTable to delete field from, either full path or arcpy inTable object
-        fieldName:  name of the field to delete
-        
-    """
+
+    
+    """   
+     
     newFieldsList = arcpy.ListFields(inTable)
     for nFld in newFieldsList:
         if nFld.name.lower() == fieldName.lower(): 

@@ -1,6 +1,10 @@
 """ Land Cover Classification(LCC) 
 
-    In memory objects reflecting Land Cover Classification information stored in XML(.lcc) file.
+    In memory objects reflecting Land Cover Classification information stored in an XML file.
+    These XML files have the extention .lcc
+    
+    Use LandCoverClassification as the entry point.  
+    The other objects are created by the LandCoverClassification object when it loads the XML file.
     
 """
 
@@ -15,7 +19,20 @@ from xml.dom.minidom import NamedNodeMap
 
 
 class LandCoverMetadata(object):
-    """An object that holds all the metadata properties associated with a single LCC document"""
+    """ This object holds all the metadata properties associated with a single LCC document
+    
+        DESCRIPTION
+        -----------
+        The LandCoverMetadata object is a Python object representation of the information 
+        stored in the <metadata> tags of a .lcc XML file.  
+    
+        PROPERTIES
+        ----------
+        name: The name of the Land Cover Classification
+        description:  The description of the Land Cover Classification
+        
+        
+    """
     
     name=None
     description=None

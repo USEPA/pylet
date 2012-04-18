@@ -1,7 +1,5 @@
-'''
-    Created on Mar 20, 2012 by Michael A. Jackson, jackson.michael@epa.gov, majgis@gmail.com
-    
-    Helper functions for rasters using ArcGIS10   
+''' arcpy helper utilities specific to rasters
+
     
 '''
 
@@ -14,15 +12,8 @@ def getRasterPointFromRowColumn(raster, row, column):
         row:  zero based row index (starting at upper left)
         column:  zero based column index (starting at upper left)
         
-        Example:
-        
-          raster:
-            1,2,3,4   
-            5,6,7,8
-          row: 0
-          column: 2
           
-          returns: Point object with x,y coordinates for value 3  
+        returns: Point object with x,y coordinates for value 3  
 
     """
     
