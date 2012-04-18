@@ -1,0 +1,313 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pylet Package &mdash; esdlepy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="esdlepy 0.1 documentation" href="index.html" />
+    <link rel="prev" title="Python Landscape Ecology Tools (pylet)" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Python Landscape Ecology Tools (pylet)"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">esdlepy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pylet-package">
+<h1>pylet Package<a class="headerlink" href="#pylet-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-pylet.arcpyutil">
+<span id="arcpyutil-sub-package"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">arcpyutil</span></tt> Sub-Package<a class="headerlink" href="#module-pylet.arcpyutil" title="Permalink to this headline">¶</a></h2>
+<p>ArcGIS 10 Helper</p>
+<p>This sub-package has functions and classes which have dependency on 
+ArcGIS 10.</p>
+<p>Do not place functions and classes without ArcGIS 10 dependency in this 
+sub-package.</p>
+</div>
+<div class="section" id="module-pylet.lcc">
+<span id="lcc-sub-package"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">lcc</span></tt> Sub-Package<a class="headerlink" href="#module-pylet.lcc" title="Permalink to this headline">¶</a></h2>
+<p>Land Cover Classification(LCC)</p>
+<p>In memory objects reflecting Land Cover Classification information stored in an XML file.
+These XML files have the extention .lcc</p>
+<p>Use LandCoverClassification as the entry point.  
+The other objects are created by the LandCoverClassification object when it loads the XML file.</p>
+<dl class="class">
+<dt id="pylet.lcc.LandCoverClass">
+<em class="property">class </em><tt class="descclassname">pylet.lcc.</tt><tt class="descname">LandCoverClass</tt><big>(</big><em>classNode=None</em>, <em>parentLccObj=None</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>An object that holds all the properties associated with a single land cover class.</p>
+<p>Values may be duplicated in child classes, only unique valueIds will be reported.
+Classes may be duplicated, only unique classIds will be reported.</p>
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClass.attributes">
+<tt class="descname">attributes</tt><em class="property"> = {}</em><a class="headerlink" href="#pylet.lcc.LandCoverClass.attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClass.classId">
+<tt class="descname">classId</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverClass.classId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverClass.loadLccClassNode">
+<tt class="descname">loadLccClassNode</tt><big>(</big><em>classNode</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClass.loadLccClassNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a Land Cover Class XML Node</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClass.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverClass.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClass.uniqueClassIds">
+<tt class="descname">uniqueClassIds</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#pylet.lcc.LandCoverClass.uniqueClassIds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClass.uniqueValueIds">
+<tt class="descname">uniqueValueIds</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#pylet.lcc.LandCoverClass.uniqueValueIds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pylet.lcc.LandCoverClasses">
+<em class="property">class </em><tt class="descclassname">pylet.lcc.</tt><tt class="descname">LandCoverClasses</tt><a class="headerlink" href="#pylet.lcc.LandCoverClasses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
+<p>A container for LandCoverClass objects</p>
+<p>Inherits from dict. The getUniqueValueIds method
+is added to return all the unique value IDs defined in all classes.</p>
+<dl class="method">
+<dt id="pylet.lcc.LandCoverClasses.getUniqueValueIds">
+<tt class="descname">getUniqueValueIds</tt><big>(</big><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClasses.getUniqueValueIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns frozenset containing all unique value IDs defined in all classes</p>
+<p>valueIds defined as excluded in the values section are not included here</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pylet.lcc.LandCoverClassification">
+<em class="property">class </em><tt class="descclassname">pylet.lcc.</tt><tt class="descname">LandCoverClassification</tt><big>(</big><em>lccFilePath=None</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClassification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>An object holding all the details about a land cover classification(lcc)</p>
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClassification.classes">
+<tt class="descname">classes</tt><em class="property"> = {}</em><a class="headerlink" href="#pylet.lcc.LandCoverClassification.classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverClassification.getUniqueValueIds">
+<tt class="descname">getUniqueValueIds</tt><big>(</big><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClassification.getUniqueValueIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>A frozenset of all unique values in the lcc file, from both the values and classes, which are not defined excluded.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverClassification.getUniqueValueIdsWithExcludes">
+<tt class="descname">getUniqueValueIdsWithExcludes</tt><big>(</big><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClassification.getUniqueValueIdsWithExcludes" title="Permalink to this definition">¶</a></dt>
+<dd><p>A frozenset of all unique values in the lcc file, from both the values and classes, excluded values ARE included</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverClassification.loadFromFilePath">
+<tt class="descname">loadFromFilePath</tt><big>(</big><em>lccFilePath</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverClassification.loadFromFilePath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a new Land Cover Classification (.lcc) File</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClassification.metadata">
+<tt class="descname">metadata</tt><em class="property"> = &lt;pylet.lcc.LandCoverMetadata object at 0x02583DD0&gt;</em><a class="headerlink" href="#pylet.lcc.LandCoverClassification.metadata" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverClassification.values">
+<tt class="descname">values</tt><em class="property"> = {}</em><a class="headerlink" href="#pylet.lcc.LandCoverClassification.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pylet.lcc.LandCoverMetadata">
+<em class="property">class </em><tt class="descclassname">pylet.lcc.</tt><tt class="descname">LandCoverMetadata</tt><big>(</big><em>metadataNode=None</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverMetadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This object holds all the metadata properties associated with a single LCC document</p>
+<p>The LandCoverMetadata object is a Python object representation of the information 
+stored in the &lt;metadata&gt; tags of a .lcc XML file.</p>
+<p>name: The name of the Land Cover Classification
+description:  The description of the Land Cover Classification</p>
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverMetadata.description">
+<tt class="descname">description</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverMetadata.description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverMetadata.loadLccMetadataNode">
+<tt class="descname">loadLccMetadataNode</tt><big>(</big><em>metadataNode</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverMetadata.loadLccMetadataNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a Land Cover Metadata XML Node</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverMetadata.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverMetadata.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pylet.lcc.LandCoverValue">
+<em class="property">class </em><tt class="descclassname">pylet.lcc.</tt><tt class="descname">LandCoverValue</tt><big>(</big><em>valueNode=None</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>An object that holds all the properties associated with a single land cover value.</p>
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverValue.attributes">
+<tt class="descname">attributes</tt><em class="property"> = {}</em><a class="headerlink" href="#pylet.lcc.LandCoverValue.attributes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverValue.excluded">
+<tt class="descname">excluded</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverValue.excluded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverValue.loadLccValueNode">
+<tt class="descname">loadLccValueNode</tt><big>(</big><em>valueNode</em><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverValue.loadLccValueNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a Land Cover Value XML Node</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverValue.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverValue.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pylet.lcc.LandCoverValue.valueId">
+<tt class="descname">valueId</tt><em class="property"> = None</em><a class="headerlink" href="#pylet.lcc.LandCoverValue.valueId" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pylet.lcc.LandCoverValues">
+<em class="property">class </em><tt class="descclassname">pylet.lcc.</tt><tt class="descname">LandCoverValues</tt><a class="headerlink" href="#pylet.lcc.LandCoverValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
+<p>A container for LandCoverValue objects</p>
+<p>Inherits from dict.
+Methods added:</p>
+<blockquote>
+<div>getExcludedValueIds 
+getIncludedValueIds</div></blockquote>
+<dl class="method">
+<dt id="pylet.lcc.LandCoverValues.getExcludedValueIds">
+<tt class="descname">getExcludedValueIds</tt><big>(</big><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverValues.getExcludedValueIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns frozenset containing all valueIds to be excluded(user defined NoData).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pylet.lcc.LandCoverValues.getIncludedValueIds">
+<tt class="descname">getIncludedValueIds</tt><big>(</big><big>)</big><a class="headerlink" href="#pylet.lcc.LandCoverValues.getIncludedValueIds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns frozenset containing all valueIds</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pylet Package</a><ul>
+<li><a class="reference internal" href="#module-pylet.arcpyutil"><tt class="docutils literal"><span class="pre">arcpyutil</span></tt> Sub-Package</a></li>
+<li><a class="reference internal" href="#module-pylet.lcc"><tt class="docutils literal"><span class="pre">lcc</span></tt> Sub-Package</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Python Landscape Ecology Tools (pylet)</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pylet.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Python Landscape Ecology Tools (pylet)"
+             >previous</a> |</li>
+        <li><a href="index.html">esdlepy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, mjacks07.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

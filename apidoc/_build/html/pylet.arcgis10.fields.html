@@ -1,0 +1,145 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>fields &mdash; pylet 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pylet 0.1 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">pylet 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pylet.arcpyutil.fields">
+<span id="fields"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">fields</span></tt><a class="headerlink" href="#module-pylet.arcpyutil.fields" title="Permalink to this headline">¶</a></h1>
+<p>ArcGIS 10 helper functions specific to fields</p>
+<p>This module contains functions and classes which act upon tabular fields within the context of ArcGIS 10</p>
+<dl class="function">
+<dt id="pylet.arcpyutil.fields.deleteField">
+<tt class="descclassname">pylet.arcpyutil.fields.</tt><tt class="descname">deleteField</tt><big>(</big><em>inTable</em>, <em>fieldName</em><big>)</big><a class="headerlink" href="#pylet.arcpyutil.fields.deleteField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the supplied field if it exists in the input table.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pylet.arcpyutil.fields.getFieldNameSizeLimit">
+<tt class="descclassname">pylet.arcpyutil.fields.</tt><tt class="descname">getFieldNameSizeLimit</tt><big>(</big><em>outTablePath</em><big>)</big><a class="headerlink" href="#pylet.arcpyutil.fields.getFieldNameSizeLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum size of output field names.</p>
+<p>DESCRIPTION
+The value returned is based on the output table&#8217;s destination/type.  Destination and type are determined by
+parsing the</p>
+<p>PARAMETERS
+outTablePath: Full path to output table</p>
+<p>RETURNS
+Integer:</p>
+<blockquote>
+<div>64  -  file and personal geodatabases
+10  -  dBASE tables (.dbf and .shp)
+16  -  INFO tables</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="pylet.arcpyutil.fields.getFieldObjectByName">
+<tt class="descclassname">pylet.arcpyutil.fields.</tt><tt class="descname">getFieldObjectByName</tt><big>(</big><em>inTable</em>, <em>fieldName</em><big>)</big><a class="headerlink" href="#pylet.arcpyutil.fields.getFieldObjectByName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the arcpy field object with the given name</p>
+<p>inTable: input table or feature class to retrieve field object from
+fieldName:  the name of the field</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pylet.arcpyutil.fields.getSortedFieldMappings">
+<tt class="descclassname">pylet.arcpyutil.fields.</tt><tt class="descname">getSortedFieldMappings</tt><big>(</big><em>tablePath</em>, <em>putTheseFirst</em><big>)</big><a class="headerlink" href="#pylet.arcpyutil.fields.getSortedFieldMappings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sorted field mappings of the given table.</p>
+<p>Given a path to a table or feature class, an arcpy FieldMappings object is returned with fields sorted.  
+Fields specified in putTheseFirst list are put at the start in the same order specified.</p>
+<p>tablePath:  path to a table or feature class with fields you wish to sort  
+putTheseFirst: list of field names to put first; order of fields is matched</p>
+<p>Returns:  arcpy FieldMappings object</p>
+<p>Example of usage:
+fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
+arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pylet.arcgis10.fields.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">pylet 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, mjacks07.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>
