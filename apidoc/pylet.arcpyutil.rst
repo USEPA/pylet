@@ -1,5 +1,5 @@
-:mod:`arcpyutil`
-===============
+arcpyutil
+=========
 
 .. automodule:: pylet.arcpyutil
     :members:

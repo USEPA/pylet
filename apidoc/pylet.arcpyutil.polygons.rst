@@ -1,5 +1,5 @@
-:mod:`polygons`
-============================
+polygons
+========
 
 .. automodule:: pylet.arcpyutil.polygons
     :members:

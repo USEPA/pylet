@@ -1,5 +1,5 @@
-:mod:`parameters`
-============================
+parameters
+==========
 
 .. automodule:: pylet.arcpyutil.parameters
     :members:

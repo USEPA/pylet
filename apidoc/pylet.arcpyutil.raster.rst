@@ -1,5 +1,5 @@
-:mod:`raster`
-============================
+raster
+======
 
 .. automodule:: pylet.arcpyutil.raster
     :members:

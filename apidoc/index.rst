@@ -1,9 +1,8 @@
-
 pylet
 =====
 
 
-.. automodule:: pylet.__init__
+.. automodule:: pylet
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,15 +11,8 @@ pylet
 .. toctree::
    :titlesonly:
    
-   pylet.arcpyutil
+   pylet.arcpyutil  
    pylet.lcc
 
 
-
-Find
-====
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 

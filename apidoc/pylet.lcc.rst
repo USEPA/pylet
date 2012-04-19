@@ -1,5 +1,5 @@
-:mod:`lcc`
-================
+lcc
+===
 
 .. automodule:: pylet.lcc
     :members:
