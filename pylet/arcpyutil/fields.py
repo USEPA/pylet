@@ -1,5 +1,9 @@
-""" Utilities for fields accessed using arcpy
-    
+""" This module contains utilities for tabular fields accessed using `arcpy`_, a Python package associated with ArcGIS. 
+
+    .. _arcpy: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/What_is_ArcPy/000v000000v7000000/
+    .. _FieldMappings: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/FieldMappings/000v0000008q000000/
+    .. _arcpy.DeleteField_management: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#//00170000004n000000
+    .. _iterable: http://docs.python.org/glossary.html#term-iterable
 """
 
 import os
@@ -8,29 +12,27 @@ import arcpy
 def getSortedFieldMappings(tablePath, putTheseFirst):
     """ Get a sorted arcpy `FieldMappings`_ object for the given table, with the specified fields up front.
 
-        **Description:**
+    **Description:**
 
         Given a path to a table or feature class, an arcpy `FieldMappings`_ object is returned with fields sorted.  
         Fields specified in putTheseFirst list are put at the start in the same order specified.
         
+        Example of usage::
         
-        **Arguments:**
+            fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
+            arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)        
+        
+    **Arguments:**
         
         * *tablePath* - path to a table or feature class with fields you wish to sort  
         * *putTheseFirst* - list of field names to put first; order of fields is matched  
         
         
-        **Returns:** 
+    **Returns:** 
         
         * arcpy `FieldMappings`_ object 
-        
-        
-        **Example of usage**::
-        
-            fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
-            arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)
-        
-        .. _FieldMappings: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/FieldMappings/000v0000008q000000/
+
+
         
     """
     
@@ -68,7 +70,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
 def getFieldNameSizeLimit(outTablePath):
     """ Return the maximum size of output field names based on the output location of the table being created.
 
-        **Description:**
+    **Description:**
         
         The value returned is based on the output table's type.  The table's type is determined by parsing the full 
         path to the table and first looking at the suffix for the workspace and then for the file.  The values are 
@@ -80,17 +82,14 @@ def getFieldNameSizeLimit(outTablePath):
         
         SDE databases are not unsupported.
         
-        
-        **Arguments:**
+    **Arguments:**
         
         * *outTablePath* - Full path to output table
         
-        
-        **Returns:** 
+    **Returns:** 
         
         * integer
 
-        
     """
 
         
@@ -114,19 +113,18 @@ def getFieldNameSizeLimit(outTablePath):
 def deleteFields(inTable, fieldNames):
     """ In the given input table, delete all fields with the specified names.
     
-        **Description:**
+    **Description:**
         
-        The arcpy.DeleteField_management tool is used to delete each field name from the input table. Field names are
-        not case sensitive.
+
+        The `arcpy.DeleteField_management`_ tool is used to delete each field name from the input table.  The field 
+        name is not case sensitive.
         
+    **Arguments:**
         
-        **Arguments:**
+        * *inTable* - Object or string indicating the input table with fields that need to be deleted
+        * *fieldNames* - An `iterable`_ containing field names to delete
         
-        * *inTable* - Input table with fields that need to be deleted
-        * *fieldNames* - A tuple or list containing field names to delete
-        
-        
-        **Returns:** 
+    **Returns:** 
         
         * None
         
@@ -139,19 +137,17 @@ def deleteFields(inTable, fieldNames):
 def getFieldByName(inTable, fieldName):
     """ In the given table, return the arcpy `Field`_ object with the given name.
 
-        **Description:**
+    **Description:**
         
         Fields in the input table are searched using arcpy.ListFields.  Names are converted to lowercase for the 
         comparison.
         
-        
-        **Arguments:**
+    **Arguments:**
         
         * *inTable* - input table or feature class to retrieve field object from
         * *fieldName* - the name of the field
         
-        
-        **Returns:** 
+    **Returns:** 
         
         * arcpy `Field`_ object 
         

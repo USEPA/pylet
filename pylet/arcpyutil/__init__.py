@@ -1,10 +1,8 @@
-""" ArcGIS 10 Helper
-
-    This sub-package has functions and classes which have dependency on 
-    ArcGIS 10.
+""" This module contains utilities for use with `arcpy`_, a Python package associated with ArcGIS. 
     
-    Do not place functions and classes without ArcGIS 10 dependency in this 
-    sub-package.
+    Do not place functions and classes without ArcGIS dependency in this sub-package.
+        
+    .. _arcpy: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/What_is_ArcPy/000v000000v7000000/
 
 """
 
