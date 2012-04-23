@@ -1,6 +1,7 @@
 """ This module contains utilities for parameters accessed using `arcpy`_, a Python package associated with ArcGIS. 
 
     .. _arcpy: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/What_is_ArcPy/000v000000v7000000/
+    .. _arcpy.GetParameterAsText: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#//000v00000014000000
 """
 
 import arcpy
@@ -9,25 +10,26 @@ PARAMETER_ENCLOSURE = "'"
 
 
 
-def getParametersAsText():
+def getParametersAsText(indexesForCatalogPath = []):
     """ Get a list of all arcpy parameters as text.
 
         **Description:**
         
         Uses `arcpy.GetParameterAsText`_ to assemble a list of strings representing parameters from the script that is 
-        being executed.
+        being executed.  
         
+        The optional *indexesForCatalogPath* argument allows you to indicate which indexes must have
+        the full catalog path retrieved. For example, if the layer name is the text returned for the parameter, you can 
+        request the full path of the dataset for that parameter by adding its index to a list passed to this function.        
         
         **Arguments:**
         
-        * Not applicable 
+        * *indexesForCatalogPath* - Iterable with integer indexes of parameters to get a catalog path for.
         
         
         **Returns:** 
         
         * list of strings
-        
-        .. _arcpy.GetParameterAsText: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#//000v00000014000000
     
     """ 
     
@@ -37,8 +39,13 @@ def getParametersAsText():
     textParameters = []
     
     while True:
-        try:
-            textParameters.append(arcpy.GetParameterAsText(count))
+        try:     
+            if count in indexesForCatalogPath:
+                parameterAsText = arcpy.Describe(arcpy.GetParameter(count)).catalogPath
+            else:
+                parameterAsText = arcpy.GetParameterAsText(count)
+                
+            textParameters.append(parameterAsText)
         except: 
             break
     
