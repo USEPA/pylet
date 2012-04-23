@@ -1,5 +1,13 @@
 @import url("sphinxdoc.css");
 
+/* !!IMPORTANT!!
+ * 
+ * Changes to this file will not be visible unless you delete existing files in the build directory. Sphinx does not
+ * check for changes to this file and will only rebuild documentation upon finding changes specific to the content 
+ * being documented.
+ * 
+ */
+
 /*Package or module name at top of page*/
 h1 
 {
@@ -26,8 +34,8 @@ h1
 /*Set margin between methods*/
 .method
 {
-	margin-bottom: 20px;
-	margin-top: 20px
+	margin-bottom: 40px;
+	margin-top: 40px
 }
 
 /*Settings for class name, inherited by all class members, so must be overridden below*/
@@ -35,13 +43,6 @@ h1
 {
 	font-size: 1.8em;
 	color: #660000;
-	
-}
-
-/*Settings for name following Bases:*/
-tt.xref 
-{
-	font-size: 1em;
 	
 }
 
@@ -68,6 +69,14 @@ tt.xref
 	color: #005500;
 }
 
+/*Settings for name following Bases:*/
+tt.xref 
+{
+	font-size: 1em;
+	color: #CA7900;
+	
+}
+
 /*Spacing between docstring lines*/
 p 
 {
@@ -75,10 +84,28 @@ p
 }
 
 
+/*Style for bolded(strong) items*/
+strong
+{
+	font-size: .85em;
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}
 
+/* Style for bulleted lists*/
+li 
+{
+	line-height: 1.5em;
+	margin-bottom: 8px;
+	margin-top: 0px;
+	padding-top: 0px;
+}
 
-
-
-
+/* Style for breadcrums at top of page*/
+.related 
+{
+	font-weight:bold;
+	font-size:1.3em;
+}
 
 
