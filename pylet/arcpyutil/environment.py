@@ -3,7 +3,7 @@
     .. _arcpy: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/What_is_ArcPy/000v000000v7000000/
     .. _iterable: http://docs.python.org/glossary.html#term-iterable
     .. _env: http://help.arcgis.com/en/arcgisdesktop/10.0/help/index.html#/env/000v00000129000000/
-    .. _System Temp: http://docs.python.org/library/tempfile.html
+    .. _System Temp: http://docs.python.org/library/tempfile.html#tempfile.gettempdir
     
 """
 
@@ -36,16 +36,21 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
         * string - full path to a workspace
     
     """
+    
+    # Scratch workspace from ArcGIS Environments
     scratchWorkspace = env.scratchWorkspace
     if scratchWorkspace:
         return scratchWorkspace
     
+    # Current workspace from ArcGIS Environments
     currentWorkspace = env.workspace
     if currentWorkspace:
         return currentWorkspace
     
+    # System temp directory
     systemTempWorkspace = tempfile.gettempdir()
     if systemTempWorkspace:
         return systemTempWorkspace
     
+    # User supplied directory or default None
     return fallBackWorkspace
