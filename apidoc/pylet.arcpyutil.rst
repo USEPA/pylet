@@ -10,6 +10,7 @@ arcpyutil
 .. toctree::
    :titlesonly:
    
+   pylet.arcpyutil.environment
    pylet.arcpyutil.fields
    pylet.arcpyutil.parameters
    pylet.arcpyutil.polygons
