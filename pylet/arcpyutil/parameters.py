@@ -16,7 +16,8 @@ def getParametersAsText(indexesForCatalogPath = []):
         **Description:**
         
         Uses `arcpy.GetParameterAsText`_ to assemble a list of strings representing parameters from the script that is 
-        being executed.  
+        being executed. ie. the input parameters for an ArcGIS toolbox dialog box, an ArcGIS modelbuilder model, or
+        another python script, etc.
         
         The optional *indexesForCatalogPath* argument allows you to indicate which indexes must have
         the full catalog path retrieved. For example, if the layer name is the text returned for the parameter, you can 
@@ -41,9 +42,9 @@ def getParametersAsText(indexesForCatalogPath = []):
     while True:
         try:     
             if count in indexesForCatalogPath:
-                parameterAsText = arcpy.Describe(arcpy.GetParameter(count)).catalogPath
+                parameterAsText = arcpy.Describe(arcpy.GetParameter(count)).catalogPath.strip("'")
             else:
-                parameterAsText = arcpy.GetParameterAsText(count)
+                parameterAsText = arcpy.GetParameterAsText(count).strip("'")
                 
             textParameters.append(parameterAsText)
         except: 
