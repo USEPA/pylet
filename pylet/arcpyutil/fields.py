@@ -9,6 +9,8 @@
 import os
 import arcpy
 
+
+
 def getSortedFieldMappings(tablePath, putTheseFirst):
     """ Get a sorted arcpy `FieldMappings`_ object for the given table, with the specified fields up front.
 
@@ -19,7 +21,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
         
         Example of usage::
         
-            fieldMappings = arcpyh.getSortedFieldMappings(inTablePath, putTheseFirst)
+            fieldMappings = pylet.arcpyutil.fields.getSortedFieldMappings(inTablePath, putTheseFirst)
             arcpy.TableToTable_conversion(inTablePath, outWorkspace, outName, None, fieldMappings)        
         
     **Arguments:**
