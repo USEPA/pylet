@@ -12,12 +12,13 @@ import arcpy
 
 
 def getSortedFieldMappings(tablePath, putTheseFirst):
-    """ Get a sorted arcpy `FieldMappings`_ object for the given table, with the specified fields up front.
+    """ Get an alphabetically sorted arcpy `FieldMappings`_ object for the given table, with the specified fields up 
+    front.
 
     **Description:**
 
-        Given a path to a table or feature class, an arcpy `FieldMappings`_ object is returned with fields sorted.  
-        Fields specified in putTheseFirst list are put at the start in the same order specified.
+        Given a path to a table or feature class, an arcpy `FieldMappings`_ object is returned with fields sorted
+        alphabetically.  Fields specified in putTheseFirst list are put at the start in the same order specified.
         
         Example of usage::
         
