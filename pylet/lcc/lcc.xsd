@@ -29,7 +29,28 @@
 		</xs:sequence>
 	</xs:complexType>		
 	
+	<!--***************
+	    COEFFICIENTS
+	****************-->
 	
+	<!--Coefficient Type-->
+	<xs:complexType name="coefficientType">
+				
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="name" type="xs:string" use="optional" />
+		<xs:attribute name="fieldName" type="xs:string" use="optional" />
+
+	</xs:complexType>
+	
+	<!--Coefficients Type-->
+	<xs:complexType name="coefficientsType">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			
+			<xs:element name="coefficient" type="coefficientType"/>
+			
+		</xs:sequence>		
+	</xs:complexType>	
+		
 	
 	<!--*********
 	    VALUES
@@ -37,6 +58,10 @@
 	
 	<!--Value Type-->
 	<xs:complexType name="valueType">
+		
+		<xs:choice>
+			<xs:element name="coefficient" type="coefficientType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:choice>	
 				
 		<xs:attribute name="id" type="xs:nonNegativeInteger" use="required" />
 		<xs:attribute name="name" type="xs:string" use="optional" />
