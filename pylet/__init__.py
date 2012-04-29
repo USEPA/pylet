@@ -10,4 +10,5 @@
 """
 
 import arcpyutil
+import conversion
 import lcc
