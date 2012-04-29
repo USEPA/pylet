@@ -398,6 +398,8 @@ class LandCoverClassification(object):
     **Arguments:**
         
         * *lccFilePath* - File path to LCC XML file (.lcc file extension)
+        * *excludeEmptyClasses* - ignore a class which does not have a value as a descendant(child, child of child, 
+        etc.)
 
     """ 
     #: A :py:class:`LandCoverClasses` object holding :py:class:`LandCoverClass` objects
@@ -412,13 +414,13 @@ class LandCoverClassification(object):
     __uniqueValueIds = None
     __uniqueValueIdsWithExcludes = None
     
-    def __init__(self, lccFilePath=None):
+    def __init__(self, lccFilePath=None, excludeEmptyClasses=True):
 
         if not lccFilePath is None:
-            self.loadFromFilePath(lccFilePath)
+            self.loadFromFilePath(lccFilePath, excludeEmptyClasses)
 
 
-    def loadFromFilePath(self, lccFilePath):
+    def loadFromFilePath(self, lccFilePath, excludeEmptyClasses=True):
         """  This method loads a a Land Cover Classification (.lcc) file.
         
         **Description:**
@@ -429,6 +431,8 @@ class LandCoverClassification(object):
         **Arguments:**
             
             * *lccFilePath* - File path to LCC XML file (.lcc file extension)         
+            * *excludeEmptyClasses* - ignore a class which does not have a value as a descendant(child, child of child, 
+            etc.)
             
         **Returns:** 
             
@@ -457,6 +461,11 @@ class LandCoverClassification(object):
         classNodes = lccDocument.getElementsByTagName(constants.XmlElementClass)
         tempClasses = LandCoverClasses() 
         for classNode in classNodes:
+            
+            # if no value elements as descendents(child, child of child, etc.), the class is skipped
+            if excludeEmptyClasses and not classNode.getElementsByTagName(constants.XmlElementValue):
+                continue
+
             classId = classNode.getAttribute(constants.XmlAttributeId)
             tempClasses[classId] = LandCoverClass(classNode, self) # passing this lccObj as parent
         self.classes = tempClasses
@@ -464,6 +473,7 @@ class LandCoverClassification(object):
         # Load Metadata
         metadataNode = lccDocument.getElementsByTagName(constants.XmlElementMetadata)[0]
         self.metadata = LandCoverMetadata(metadataNode)        
+
 
     
     def getUniqueValueIds(self):
