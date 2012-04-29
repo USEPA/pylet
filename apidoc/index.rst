@@ -9,10 +9,12 @@ pylet
     
     
 .. toctree::
-   :titlesonly:
-   
+
    pylet.arcpyutil  
+   pylet.conversion
+   pylet.datetimeutil
    pylet.lcc
+   
 
 
 
