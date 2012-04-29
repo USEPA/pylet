@@ -2,10 +2,35 @@
 
     .. _date: http://docs.python.org/library/datetime.html#date-objects
     .. _datetime: http://docs.python.org/library/datetime.html
+    .. _generator: http://docs.python.org/tutorial/classes.html#generators
 
 '''
-
+from datetime import timedelta
 import datetime
+
+def dateRange(startDate, endDate):
+    """ A `generator`_ for days as `date`_ object from *startDate* up to and including *endDate*
+    
+    **Description:**
+    
+        Treat this function as an iterable that yields `date`_ objects, in one day increments, from the start date up 
+        to and including the end date. 
+    
+    **Arguments:**
+    
+        * *startDate* - date object for first date in sequence to be generated
+        * *endDate* - date object for last date in sequence to be generated 
+    
+    **Returns:**
+        
+        * `generator`_ for `date`_ objects in range
+    
+    
+    """
+    
+    
+    for n in range((endDate - startDate).days):
+        yield startDate + timedelta(n)
 
 def getDateObjectFromString(dateString, setToFirstOfMonth=False):    
     """ Convert date in different string formats to a `date`_ object.
@@ -33,8 +58,8 @@ def getDateObjectFromString(dateString, setToFirstOfMonth=False):
     
     if FORWARD_SLASH in dateString:
         month, day, year = dateString.split(FORWARD_SLASH)
-        
-    if DASH in dateString:
+            
+    elif DASH in dateString:
         year, month, day = dateString.split(DASH)
         
     else:
