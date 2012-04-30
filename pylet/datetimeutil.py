@@ -92,3 +92,30 @@ def getDateObjectFromStrings(month, day, year):
     
     """
     return datetime.date(int(year), int(month), int(day))
+
+
+def dateObjectToString(date, delimiter="-"):
+    """ Format date object as a string in format YYYY-MM-DD 
+    
+    **Description:**
+    
+        The date object has a year, month and day associated with it.  Each of these is converted to a string
+        and joined with the specified delimiter (the default delimiter is a dash).
+    
+    **Arguments:**
+    
+        * *date* - `date`_ object
+        * *delimiter* - string to separate year, month and day
+    
+    **Returns:**
+        
+        * string in format YYYY-MM-DD
+    
+    """
+    
+    return "{0}{3}{1:02d}{3}{2:02d}".format(date.year, date.month, date.day, delimiter)
+
+
+
+
+
