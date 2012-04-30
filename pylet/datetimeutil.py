@@ -94,7 +94,7 @@ def getDateObjectFromStrings(month, day, year):
     return datetime.date(int(year), int(month), int(day))
 
 
-def dateObjectToString(date, delimiter="-"):
+def getDateStringFromObject(date, delimiter="-"):
     """ Format date object as a string in format YYYY-MM-DD 
     
     **Description:**
