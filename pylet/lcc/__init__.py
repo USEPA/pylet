@@ -35,6 +35,7 @@ class LandCoverMetadata(object):
     """    
     #: The name of the Land Cover Classification
     name = ""
+    
     #: A description of the Land Cover Classification
     description = ""
     
@@ -89,9 +90,6 @@ class LandCoverClass(object):
     
     #: The name of the class
     name = ''
-    
-    #: A `dict`_ for all XML attributes associated with the class-`Node`_
-    attributes = dict()
     
     #: A `frozenset`_ of all unique identifiers for Values
     uniqueValueIds = frozenset()
@@ -154,10 +152,6 @@ class LandCoverClass(object):
         
         self.uniqueValueIds = frozenset(tempValueIds)
             
-        #Load all attributes into dictionary
-        self.attributes = {}
-        for attributeName, attributeValue in classNode.attributes.items():
-            self.attributes[str(attributeName)] = str(attributeValue)
         
         
 class LandCoverValue(object): 
@@ -179,18 +173,20 @@ class LandCoverValue(object):
     #: The name of the value
     name = ''
     
-    #: Boolean for whether value is excluded, ie. water
+    #: A boolean for whether value is excluded, ie. water
     excluded = None
     
-    #: A `dict`_ for all XML attributes associated with the class-`Node`_
-    attributes = {}
-    
+    #: A `dict`_ with coefId as the key and :py:class:`LandCoverCoefficient` as the value.
+    coefficients = {}
+        
     def __init__(self, valueNode=None):
 
-        self.defaultNodataValue = False
+        self.coefficients = {}
         
         if not valueNode is None:
             self.loadLccValueNode(valueNode)
+        else:
+            self.coefficients = {}
     
     
     def loadLccValueNode(self, valueNode):
@@ -220,15 +216,15 @@ class LandCoverValue(object):
             try:
                 self.excluded = bool(nodata)
             except:
-                self.excluded = self.defaultNodataValue
+                self.excluded = False
         else:
-            self.excluded = self.defaultNodataValue
+            self.excluded = False
+        
+        # Load coefficients
+        for coefficientNode in valueNode.getElementsByTagName(constants.XmlElementCoefficient):
+            lcCoef = LandCoverCoefficient(coefficientNode)
+            self.coefficients[lcCoef.coefId] = lcCoef
             
-        #Load all attributes into dictionary
-        self.attributes = {}
-        for attributeName, attributeValue in valueNode.attributes.items():
-            self.attributes[str(attributeName)] = str(attributeValue)
-
 
 class LandCoverValues(dict):
     """ This class holds all :py:class:`LandCoverValue` objects.
@@ -386,6 +382,56 @@ class LandCoverClasses(dict):
         """String representation when printed"""
         return self.__class__.__name__ + "()"   
       
+class LandCoverCoefficients(dict):
+    """ This class holds :py:class:`LandCoverCoefficient` objects.
+
+    **Description:**
+        
+        This class holds all of the :py:class:`LandCoverCoefficient` objects loaded from the LCC XML file.          
+        
+    **Arguments:**
+        
+        * *coefficientsNode* - LCC class-`Node`_ loaded from a lcc file
+
+    """
+
+
+    # Private frozenset for all unique values
+    __uniqueValues = None
+    
+    def __init__(self, coefficientsNode=None):
+    
+        if not coefficientsNode is None:
+            self.loadLccCoefficientsNode(coefficientsNode)
+            
+    
+    def loadLccCoefficientsNode(self, coefficientsNode):
+        """  This method Loads a LCC coefficients-`Node`_ to assign all properties associated with this class.
+        
+        **Description:**
+            
+            If the LCC coefficients-`Node`_ was not provided as an argument when this class was instantiated, 
+            you can load one to assign all properties associated with this class.                        
+            
+        **Arguments:**
+            
+            * *valueNode* - LCC coefficients-`Node`_ loaded from a lcc file            
+            
+        **Returns:** 
+            
+            * None       
+        
+        """ 
+        
+        # Load coefficients
+        for coefficientNode in coefficientsNode.getElementsByTagName(constants.XmlElementCoefficient):
+            lcCoef = LandCoverCoefficient(coefficientNode)
+            self[lcCoef.coefId] = lcCoef
+            
+    def __repr__(self):
+        """String representation when printed"""
+        return self.__class__.__name__ + "()"   
+
       
 class LandCoverClassification(object):
     """ This class holds all the details about a Land Cover Classification(LCC).
@@ -398,8 +444,7 @@ class LandCoverClassification(object):
     **Arguments:**
         
         * *lccFilePath* - File path to LCC XML file (.lcc file extension)
-        * *excludeEmptyClasses* - ignore a class which does not have a value as a descendant(child, child of child, 
-        etc.)
+        * *excludeEmptyClasses* - ignore a class which does not have a value as a descendant
 
     """ 
     #: A :py:class:`LandCoverClasses` object holding :py:class:`LandCoverClass` objects
@@ -411,13 +456,22 @@ class LandCoverClassification(object):
     #: A :py:class:`LandCoverMetadata` object
     metadata = LandCoverMetadata()
     
+    #: A `dict`_ holding :py:class:`LandCoverCoefficient` objects
+    coefficients = LandCoverCoefficients()
+    
     __uniqueValueIds = None
     __uniqueValueIdsWithExcludes = None
+    
     
     def __init__(self, lccFilePath=None, excludeEmptyClasses=True):
 
         if not lccFilePath is None:
             self.loadFromFilePath(lccFilePath, excludeEmptyClasses)
+        else:
+            self.classes = LandCoverClasses()
+            self.values = LandCoverValues()
+            self.metadata = LandCoverMetadata()
+            self.coefficients = LandCoverCoefficients()
 
 
     def loadFromFilePath(self, lccFilePath, excludeEmptyClasses=True):
@@ -472,10 +526,12 @@ class LandCoverClassification(object):
         
         # Load Metadata
         metadataNode = lccDocument.getElementsByTagName(constants.XmlElementMetadata)[0]
-        self.metadata = LandCoverMetadata(metadataNode)        
+        self.metadata = LandCoverMetadata(metadataNode)   
 
-
-    
+        # Load Coefficients
+        self.coefficients = LandCoverCoefficients(lccDocument.getElementsByTagName(constants.XmlElementCoefficients)[0])
+        
+        
     def getUniqueValueIds(self):
         """  Get a `frozenset`_ containing all unique valueIds in the Land Cover Classification.
         
@@ -533,5 +589,70 @@ class LandCoverClassification(object):
         return self.__uniqueValueIdsWithExcludes
     
 
+
+class LandCoverCoefficient(object):
+    """ This class holds all of the properties associated with a LCC coefficient-`Node`_.
+
+    **Description:**
+        
+        This class holds all of the information stored in a <coefficient> tag within XML file.  Some properties are
+        not available depending on the context.  The *coefId*, *name* and *fieldName* properties are available from the 
+        coefficients section.  The *coefId* and *value* are availiable when associated with a value.          
+        
+    **Arguments:**
+        
+        * *coefficientNode* - LCC coefficient-`Node`_ loaded from a lcc file
+
+    """
     
+    #: The unique identifier for the coefficient
+    coefId = ""
+    
+    #: The name of the coefficient
+    name = ""
+    
+    #: The name of the field use in output tables
+    fieldName = ""
+    
+    #: The actual coefficient value
+    value = ""
+    
+    
+    def __init__(self, coefficientNode=None):
+        
+        if not coefficientNode is None:
+            self.loadLccCoefficientNode(coefficientNode)
+    
+    
+    def loadLccCoefficientNode(self, coefficientNode):
+        """  This method Loads a LCC coefficient-`Node`_ to assign all properties associated with this class.
+        
+        **Description:**
+            
+            If the LCC coefficient-`Node`_ was not provided as an argument when this class was instantiated, you can load 
+            one to assign all properties associated with this class.                        
+            
+        **Arguments:**
+            
+            * *coefficientNode* - LCC coefficient-`Node`_ loaded from a lcc file            
+            
+        **Returns:** 
+            
+            * None
+        
+        """ 
+
+        self.coefId = coefficientNode.getAttribute(constants.XmlAttributeId)
+        self.name = coefficientNode.getAttribute(constants.XmlAttributeName)
+        self.fieldName = coefficientNode.getAttribute(constants.XmlAttributeFieldName)
+        
+        try:
+            self.value = float(coefficientNode.getAttribute(constants.XmlAttributeValue))
+        except:
+            self.value = 0.0
+    
+    def __repr__(self):
+        """String representation when printed"""
+        return self.__class__.__name__ + "()"  
+
     
