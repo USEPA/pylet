@@ -97,6 +97,9 @@ class LandCoverClass(object):
     #: A `frozenset`_ of all unique identifiers for Classes
     uniqueClassIds = frozenset()
     
+    #: A `dict`_ for all XML attributes associated with the class-`Node`_
+    attributes = dict()
+    
     __parentLccObj = None
     
     def __init__(self, classNode=None, parentLccObj=None):
@@ -105,6 +108,8 @@ class LandCoverClass(object):
         
         if not classNode is None:
             self.loadLccClassNode(classNode)
+        else:
+            self.attributes = {}
             
         
     def loadLccClassNode(self, classNode):
@@ -152,7 +157,11 @@ class LandCoverClass(object):
         
         self.uniqueValueIds = frozenset(tempValueIds)
             
-        
+        #Load all attributes into dictionary
+        self.attributes = {}
+        for attributeName, attributeValue in classNode.attributes.items():
+            self.attributes[str(attributeName)] = str(attributeValue)
+       
         
 class LandCoverValue(object): 
     """ This class holds all of the properties associated with a LCC value-`Node`_.
