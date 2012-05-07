@@ -26,27 +26,28 @@ def dmsToDecimalDegrees(degrees, minutes=0, seconds=0):
     """
 
     # If degrees are a string, convert to float
-    if isinstance(degrees, str):
+    if isinstance(degrees, str) or isinstance(degrees, unicode):
         try:
             degrees = float(degrees)
         except:
             degrees = 0
     
     # If minutes are a string, convert to float
-    if isinstance(minutes, str):
+    if isinstance(minutes, str) or isinstance(minutes, unicode):
         try:
             minutes = float(minutes)
         except:
             minutes = 0
     
     # If seconds are a string, convert to float
-    if isinstance(seconds, str):
+    if isinstance(seconds, str) or isinstance(seconds, unicode):
         try:
             seconds = float(seconds)
         except:
             seconds = 0    
     
-    return degrees + minutes/60.0 + seconds/3600.0
+    return degrees + minutes/60.0 + seconds/3600.0    
+
 
 
 def hundredthsOfInchesToMillimeters (hundredthsOfInches, decimalPlaces=2):
