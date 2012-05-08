@@ -47,10 +47,10 @@ def testLccFiles(filePaths):
         for key, value in lccObj.values.items():
             print "  {0:8}{1:8}  {2:40}{3:10}".format(key, value.valueId, value.name, value.excluded)
             assert isinstance(value, pylet.lcc.LandCoverValue)
-            for key, value in value.coefficients.iteritems():
-                assert isinstance(value, pylet.lcc.LandCoverCoefficient)
-                assert isinstance(value.value, float)
-                print "              key:", key, "coefId:", value.coefId, "value:", value.value
+            print value.getCoefficientValueById('P')
+            print value.getCoefficientValueById('N')
+            print value.getCoefficientValueById('PCTIA')
+
                 
             print
         print 

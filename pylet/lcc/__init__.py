@@ -173,12 +173,10 @@ class LandCoverValue(object):
     #: A boolean for whether value is excluded, ie. water
     excluded = None
     
-    #: A `dict`_ with coefId as the key and :py:class:`LandCoverCoefficient` as the value.
-    coefficients = {}
+    # coefId as the key and LandCoverCoefficient as the value.
+    _coefficients = {}
         
     def __init__(self, valueNode=None):
-
-        self.coefficients = {}
         
         if not valueNode is None:
             self._loadLccValueNode(valueNode)
@@ -212,10 +210,38 @@ class LandCoverValue(object):
             self.excluded = False
         
         # Load coefficients
+        self._coefficients = {}
         for coefficientNode in valueNode.getElementsByTagName(constants.XmlElementCoefficient):
             lcCoef = LandCoverCoefficient(coefficientNode)
-            self.coefficients[lcCoef.coefId] = lcCoef
+            self._coefficients[lcCoef.coefId] = lcCoef
+    
+    def getCoefficientValueById(self, coeffId):
+        """  Given the unique identifier for a coefficient, this method returns the corresponding coefficient value. 
+        
+        **Description:**
+        
+            A LandCoverValue can have multiple coefficients.  This method allows you to look up the actual coefficient
+            value as a floating point number based on the coefficient's unique identifier.  If you need additional 
+            details about a coefficient, see the :py:class:`LandCoverCoefficients` property associated with 
+            :py:class:`LandCoverClassification`.
+        
+        **Arguments:**
             
+            * *coeffId* - Coefficient unique identifier, ie. IMPERVIOUS, NITROGEN, PHOSPHORUS, etc.
+        
+        **Returns:**
+            
+            * float
+        
+        """
+        
+        try:
+            coeffValue = self._coefficients[coeffId].value
+        except:
+            coeffValue = None
+            
+        return coeffValue 
+
 
 class LandCoverValues(dict):
     """ This class holds all :py:class:`LandCoverValue` objects.
