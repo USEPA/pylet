@@ -1,8 +1,7 @@
-'''  runAllTests.py
-
-    Created:  Mar 6, 2012
-    Author:  mjacks07, Michael A. Jackson, jackson.michael@epa.gov, majgis@gmail.com
-    
-    
-    
+'''  Run all pylet tests
 '''
+
+import lccTest
+
+lccTest.main()
+
