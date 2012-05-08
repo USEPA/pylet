@@ -42,10 +42,10 @@ class LandCoverMetadata(object):
     def __init__(self, metadataNode=None):
     
         if not metadataNode is None:
-            self.loadLccMetadataNode(metadataNode)
+            self._loadLccMetadataNode(metadataNode)
             
 
-    def loadLccMetadataNode(self, metadataNode):
+    def _loadLccMetadataNode(self, metadataNode):
         """  This method Loads a LCC metadata-`Node`_ to assign all properties associated with this class.        
         
         **Description:**
@@ -53,13 +53,7 @@ class LandCoverMetadata(object):
             If the LCC metadata-`Node`_ was not provided as an argument when this class was instantiated, you can load one
             to assign all properties associated with this class.                        
             
-        **Arguments:**
-            
-            * *metadataNode* - LCC metadata-`Node`_ loaded from a lcc file            
-            
-        **Returns:** 
-            
-            * None       
+            See the class description for additional details
                     
         """
         
@@ -107,12 +101,12 @@ class LandCoverClass(object):
         self.__parentLccObj = parentLccObj
         
         if not classNode is None:
-            self.loadLccClassNode(classNode)
+            self._loadLccClassNode(classNode)
         else:
             self.attributes = {}
             
         
-    def loadLccClassNode(self, classNode):
+    def _loadLccClassNode(self, classNode):
         """  This method Loads a LCC class-`Node`_ to assign all properties associated with this class.        
         
         **Description:**
@@ -120,14 +114,8 @@ class LandCoverClass(object):
             If the LCC class-`Node`_ was not provided as an argument when this class was instantiated, you can load 
             one to assign all properties associated with this class.                        
             
-        **Arguments:**
-            
-            * *classNode* - LCC class-`Node`_ loaded from a lcc file            
-            
-        **Returns:** 
-            
-            * None       
-        
+           See the class description for additional details
+           
         """   
  
         # Load specific attributes as object properties
@@ -193,12 +181,12 @@ class LandCoverValue(object):
         self.coefficients = {}
         
         if not valueNode is None:
-            self.loadLccValueNode(valueNode)
+            self._loadLccValueNode(valueNode)
         else:
             self.coefficients = {}
     
     
-    def loadLccValueNode(self, valueNode):
+    def _loadLccValueNode(self, valueNode):
         """  This method Loads a LCC value-`Node`_ to assign all properties associated with this class.
         
         **Description:**
@@ -206,13 +194,7 @@ class LandCoverValue(object):
             If the LCC value-`Node`_ was not provided as an argument when this class was instantiated, you can load 
             one to assign all properties associated with this class.                        
             
-        **Arguments:**
-            
-            * *valueNode* - LCC value-`Node`_ loaded from a lcc file            
-            
-        **Returns:** 
-            
-            * None       
+            See the class description for additional details
         
         """ 
 
@@ -271,7 +253,7 @@ class LandCoverValues(dict):
         
         if self.__excludedValueIds is None:
             
-            self.__updateValueIds()
+            self._updateValueIds()
 
         return self.__excludedValueIds
 
@@ -295,13 +277,13 @@ class LandCoverValues(dict):
         
         if self.__includedValueIds is None:
             
-            self.__updateValueIds()
+            self._updateValueIds()
 
         
         return self.__includedValueIds
     
     
-    def __updateValueIds(self):
+    def _updateValueIds(self):
         """ Updates internal frozen sets with included/excluded valueIds 
         
         **Description:**
@@ -391,6 +373,7 @@ class LandCoverClasses(dict):
         """String representation when printed"""
         return self.__class__.__name__ + "()"   
       
+      
 class LandCoverCoefficients(dict):
     """ This class holds :py:class:`LandCoverCoefficient` objects.
 
@@ -411,10 +394,10 @@ class LandCoverCoefficients(dict):
     def __init__(self, coefficientsNode=None):
     
         if not coefficientsNode is None:
-            self.loadLccCoefficientsNode(coefficientsNode)
+            self._loadLccCoefficientsNode(coefficientsNode)
             
     
-    def loadLccCoefficientsNode(self, coefficientsNode):
+    def _loadLccCoefficientsNode(self, coefficientsNode):
         """  This method Loads a LCC coefficients-`Node`_ to assign all properties associated with this class.
         
         **Description:**
@@ -475,7 +458,7 @@ class LandCoverClassification(object):
     def __init__(self, lccFilePath=None, excludeEmptyClasses=True):
 
         if not lccFilePath is None:
-            self.loadFromFilePath(lccFilePath, excludeEmptyClasses)
+            self._loadFromFilePath(lccFilePath, excludeEmptyClasses)
         else:
             self.classes = LandCoverClasses()
             self.values = LandCoverValues()
@@ -483,7 +466,7 @@ class LandCoverClassification(object):
             self.coefficients = LandCoverCoefficients()
 
 
-    def loadFromFilePath(self, lccFilePath, excludeEmptyClasses=True):
+    def _loadFromFilePath(self, lccFilePath, excludeEmptyClasses=True):
         """  This method loads a a Land Cover Classification (.lcc) file.
         
         **Description:**
@@ -491,15 +474,7 @@ class LandCoverClassification(object):
             If the file path to a LCC file was not provided as an argument when this class was instantiated, you can 
             load one to assign all properties associated with this class.                        
             
-        **Arguments:**
-            
-            * *lccFilePath* - File path to LCC XML file (.lcc file extension)         
-            * *excludeEmptyClasses* - ignore a class which does not have a value as a descendant(child, child of child, 
-            etc.)
-            
-        **Returns:** 
-            
-            * None       
+            See the class description for additional details     
                     
         """
         
@@ -630,10 +605,10 @@ class LandCoverCoefficient(object):
     def __init__(self, coefficientNode=None):
         
         if not coefficientNode is None:
-            self.loadLccCoefficientNode(coefficientNode)
+            self._loadLccCoefficientNode(coefficientNode)
     
     
-    def loadLccCoefficientNode(self, coefficientNode):
+    def _loadLccCoefficientNode(self, coefficientNode):
         """  This method Loads a LCC coefficient-`Node`_ to assign all properties associated with this class.
         
         **Description:**
@@ -641,13 +616,7 @@ class LandCoverCoefficient(object):
             If the LCC coefficient-`Node`_ was not provided as an argument when this class was instantiated, you can load 
             one to assign all properties associated with this class.                        
             
-        **Arguments:**
-            
-            * *coefficientNode* - LCC coefficient-`Node`_ loaded from a lcc file            
-            
-        **Returns:** 
-            
-            * None
+            See the class description for additional details
         
         """ 
 
