@@ -70,7 +70,7 @@ def getSortedFieldMappings(tablePath, putTheseFirst):
     return fieldMappings
 
 
-def getFieldNameSizeLimit(outTablePath):
+def getFieldNameSizeLimit(outTablePath, fixes=None):
     """ Return the maximum size of output field names based on the output location of the table being created.
 
     **Description:**
@@ -83,11 +83,15 @@ def getFieldNameSizeLimit(outTablePath):
         * 10  -  dBASE tables (file with .dbf or .shp extension)
         * 16  -  INFO tables (default if previous identifiers were not found
         
+        The length of *fixes* will be subtracted from this number.  The *fixes* argument can be a single string or
+        a list of strings that might be added to a root field name for which you need the length.
+        
         SDE databases are not unsupported.
         
     **Arguments:**
         
         * *outTablePath* - Full path to output table
+        * *fixes* - A string or list of strings
         
     **Returns:** 
         
@@ -110,7 +114,15 @@ def getFieldNameSizeLimit(outTablePath):
     else:
         maxFieldNameSize = 16 # maximum for INFO tables
         
-    return maxFieldNameSize
+    if fixes:
+        #fixes is a list
+        if isinstance(fixes, list):
+            extraLength = sum((len(fix) for fix in fixes ))
+        #fixes is a string
+        else:
+            extraLength = len(fixes)
+        
+    return maxFieldNameSize - extraLength
 
 
 def deleteFields(inTable, fieldNames):
@@ -166,5 +178,3 @@ def getFieldByName(inTable, fieldName):
             break
         
     return idField
-
-
