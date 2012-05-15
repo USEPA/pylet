@@ -113,7 +113,8 @@ def getFieldNameSizeLimit(outTablePath, fixes=None):
         maxFieldNameSize = 10 # maximum for dBASE tables
     else:
         maxFieldNameSize = 16 # maximum for INFO tables
-        
+    
+    extraLength = 0
     if fixes:
         #fixes is a list
         if isinstance(fixes, list):
