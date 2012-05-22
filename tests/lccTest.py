@@ -81,9 +81,10 @@ def testLccFiles(filePaths):
         def printDescendentClasses(landCoverClass, indentUnit, indentLevel):
             
             for childClass in landCoverClass.childClasses:
+                print indentUnit*indentLevel, childClass.classId
                 printDescendentClasses(childClass, indentUnit, indentLevel + 1)
                 
-                print indentUnit*indentLevel, childClass.classId
+                
             
         for topLevelClass in lccObj.classes.topLevelClasses:
             print indent, topLevelClass.classId 
