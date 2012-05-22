@@ -72,7 +72,7 @@ class LandCoverClass(object):
     **Arguments:**
         
         * *classNode* - LCC class-`Node`_ loaded from a lcc file
-        * *parentLccObj* - The parent :py:class:`LandCoverClassification` object
+        * *parentClass* - The parent :py:class:`LandCoverClass` object
 
 
     """
@@ -101,10 +101,12 @@ class LandCoverClass(object):
     childValueIds = None
     
     __parentLccObj = None
+    _excludeEmptyClasses = None
     
-    def __init__(self, classNode=None, parentClass=None):
+    def __init__(self, classNode=None, parentClass=None, excludeEmptyClasses=True):
         
         self.parentClass = parentClass
+        self._excludeEmptyClasses = excludeEmptyClasses
         
         if not classNode is None:
             self._loadLccClassNode(classNode)
@@ -137,23 +139,26 @@ class LandCoverClass(object):
         for childNode in classNode.childNodes:
             
             if isinstance(childNode, minidom.Element):
+                
                 # Process child classes
                 if childNode.tagName == constants.XmlElementClass:
                     
                     # Point of recursion...bottom-most classes are processed first.
-                    landCoverClass = LandCoverClass(childNode, self)
+                    landCoverClass = LandCoverClass(childNode, self, self._excludeEmptyClasses)
                     
-                    # Assemble child classes
-                    self.childClasses.append(landCoverClass)
                     
-                    # Add child classId to uniqueClassIds
-                    uniqueClassIds.add(landCoverClass.classId)
-                    
-                    # Add uniqueClassIds of child
-                    uniqueClassIds.update(landCoverClass.uniqueClassIds)
-                    
-                    # Add uniqueValueIds of child
-                    uniqueValueIds.update(landCoverClass.uniqueValueIds)
+                    if landCoverClass.childClasses or landCoverClass.childValueIds:
+                        # Assemble child classes
+                        self.childClasses.append(landCoverClass)
+                        
+                        # Add child classId to uniqueClassIds
+                        uniqueClassIds.add(landCoverClass.classId)
+                        
+                        # Add uniqueClassIds of child
+                        uniqueClassIds.update(landCoverClass.uniqueClassIds)
+                        
+                        # Add uniqueValueIds of child
+                        uniqueValueIds.update(landCoverClass.uniqueValueIds)
             
                 # Process child values
                 elif childNode.tagName == constants.XmlElementValue:
@@ -400,7 +405,6 @@ class LandCoverClasses(dict):
     
     #: Top level classes which reside in the root of the <classes> node and have no parent
     topLevelClasses = None
-    
 
     def __init__(self, classesNode=None, excludeEmptyClasses=True):
 
@@ -417,7 +421,7 @@ class LandCoverClasses(dict):
         for childNode in classesNode.childNodes:
 
             if isinstance(childNode, minidom.Element) and childNode.tagName == constants.XmlElementClass:
-                topLevelClass = LandCoverClass(childNode)
+                topLevelClass = LandCoverClass(childNode, None, self.excludeEmptyClasses)
                 self.topLevelClasses.append(topLevelClass)
                 
                 # Add topLevelClass and all its descendents to dictionary
@@ -427,7 +431,7 @@ class LandCoverClasses(dict):
                     self[descendentClass.classId] = descendentClass
                 
                 
-    def _getDescendentClasses(self, landCoverClass ):
+    def _getDescendentClasses(self, landCoverClass):
         
         descendentClasses = []
 
