@@ -52,7 +52,6 @@ def testLccFiles(filePaths):
             print indent, "valueId:", value.valueId
             print indent, "name:", value.name
             print indent, "excluded:", value.excluded
-            assert isinstance(value, pylet.lcc.LandCoverValue)
             print indent, "PHOSPHORUS:", value.getCoefficientValueById('PHOSPHORUS')
             print indent, "NITROGEN:", value.getCoefficientValueById('NITROGEN')
             print indent, "IMPERVIOUS:", value.getCoefficientValueById('IMPERVIOUS')
@@ -67,6 +66,13 @@ def testLccFiles(filePaths):
             print indent, "name:", landCoverClass.name
             print indent, "uniqueValueIds:", landCoverClass.uniqueValueIds
             print indent, "uniqueClassIds:", landCoverClass.uniqueClassIds
+            try:
+                print indent, "parentClass:", landCoverClass.parentClass.classId
+            except:
+                print indent, "parentClass: None"
+                
+            print indent, "childClasses:", [childClass.classId for childClass in landCoverClass.childClasses]
+            print indent, "childValueIds:", landCoverClass.childValueIds
             print
         print
         
