@@ -11,14 +11,16 @@ XmlFileExtension = ".lcc"
 PredefinedFileDirName = "LandCoverClassifications"
 UserDefinedOptionDescription = "User Defined"
 
+
 # XML Elements
-xmlElementClasses = "classes"
+XmlElementClasses = "classes"
 XmlElementClass = "class"
 XmlElementValues = "values"
 XmlElementValue = "value"
 XmlElementMetadata = "metadata"
 XmlElementCoefficient = "coefficient"
 XmlElementCoefficients = "coefficients"
+
 
 # XML Attributes
 XmlAttributeId = "id"

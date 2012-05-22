@@ -39,39 +39,65 @@ def testLccFiles(filePaths):
         print "ATTRIBUTES"
         for key, value in lccObj.coefficients.iteritems():
             assert isinstance(value, pylet.lcc.LandCoverCoefficient)
-            print indent, "key:", key, "coefId:", value.coefId, "fieldName:", value.fieldName       
+            print indent, "key:", key
+            print indent, "coefId:", value.coefId
+            print indent, "fieldName:", value.fieldName 
+            print      
         print
         
         
         print "VALUES"
         for key, value in lccObj.values.items():
-            print "  {0:8}{1:8}  {2:40}{3:10}".format(key, value.valueId, value.name, value.excluded)
+            print indent, "key:", key
+            print indent, "valueId:", value.valueId
+            print indent, "name:", value.name
+            print indent, "excluded:", value.excluded
             assert isinstance(value, pylet.lcc.LandCoverValue)
-            print value.getCoefficientValueById('P')
-            print value.getCoefficientValueById('N')
-            print value.getCoefficientValueById('PCTIA')
-
-                
+            print indent, "PHOSPHORUS:", value.getCoefficientValueById('PHOSPHORUS')
+            print indent, "NITROGEN:", value.getCoefficientValueById('NITROGEN')
+            print indent, "IMPERVIOUS:", value.getCoefficientValueById('IMPERVIOUS')
             print
         print 
         
         
-        print "ALL CLASSES"
+        print "CLASSES - NO HIERARCHY"
         for classId, landCoverClass in lccObj.classes.items():
-            print "  classId:{0:8}classId:{1:8}name:{2:40}{3}{4}".format(classId, landCoverClass.classId, landCoverClass.name, landCoverClass.uniqueValueIds, landCoverClass.uniqueClassIds)
+            print indent, "key:", classId
+            print indent, "classId:", landCoverClass.classId
+            print indent, "name:", landCoverClass.name
+            print indent, "uniqueValueIds:", landCoverClass.uniqueValueIds
+            print indent, "uniqueClassIds:", landCoverClass.uniqueClassIds
+            print
         print
+        
+        print "CLASSES - HIERARCHY"
+        
+        def printDescendentClasses(landCoverClass, indentUnit, indentLevel):
+            
+            for childClass in landCoverClass.childClasses:
+                printDescendentClasses(childClass, indentUnit, indentLevel + 1)
+                
+                print indentUnit*indentLevel, childClass.classId
+            
+        for topLevelClass in lccObj.classes.topLevelClasses:
+            print indent, topLevelClass.classId 
+            printDescendentClasses(topLevelClass, indent, 2)
+        print
+        
         print "UNIQUE VALUES IN CLASSES"
-        print lccObj.classes.getUniqueValueIds()
+        print indent, lccObj.classes.getUniqueValueIds()
         print
-        print "INCLUDED/EXCLUDED VALUES"
-        print "included:", lccObj.values.getIncludedValueIds()
-        print "excluded:", lccObj.values.getExcludedValueIds()
-        print
-        print "UNIQUE VALUES IN OBJECT"
-        print "Top level unique value IDs without excludes:", lccObj.getUniqueValueIds()
-        print "Top level unique value IDs with excludes:", lccObj.getUniqueValueIdsWithExcludes()
 
+        print "INCLUDED/EXCLUDED VALUES"
+        print indent, "included:", lccObj.values.getIncludedValueIds()
+        print indent, "excluded:", lccObj.values.getExcludedValueIds()
         print
+
+        print "UNIQUE VALUES IN OBJECT"
+        print indent, "Top level unique value IDs without excludes:", lccObj.getUniqueValueIds()
+        print indent, "Top level unique value IDs with excludes:", lccObj.getUniqueValueIdsWithExcludes()
+        print
+        
         print "---------------------------------------------------------------------------------"
         print
         
