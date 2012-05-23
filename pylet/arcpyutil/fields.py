@@ -179,3 +179,33 @@ def getFieldByName(inTable, fieldName):
             break
         
     return idField
+
+def convertFieldType(inField):
+    """ Field objects in ArcGIS 10 SP 0 have a type property that is incompatible with some of the AddField tool's Field Type keywords.
+    
+    **Description:**
+    
+        Field objects in ArcGIS 10 service pack 0 have a type property that is incompatible with some of the AddField 
+        tool's Field Type keywords. This addresses that issue by converting the field.type return string to the acceptable
+        Field Type keyword.
+        
+    **Arguments:**
+    
+        * *inField* - input field to check/convert field type string from
+        
+    **Returns:**
+    
+        * outFieldType string
+        
+    """
+    
+    outFieldType = inField.type.lower()
+    
+    if outFieldType == "string":
+        outFieldType = "TEXT"
+    elif outFieldType == "integer":
+        outFieldType = "LONG"
+    elif outFieldType == "smallinteger":
+        outFieldType = "SHORT"
+        
+    return outFieldType
