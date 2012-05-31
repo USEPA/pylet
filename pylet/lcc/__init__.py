@@ -177,7 +177,7 @@ class LandCoverClass(object):
        
         
 class LandCoverValue(object): 
-    """ This class holds all of the properties associated with a LCC value-`Node`_.
+    """ This class holds all of the properties associated with an LCC value-`Node`_.
 
     **Description:**
         
