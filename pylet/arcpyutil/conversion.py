@@ -1,22 +1,34 @@
 ''' Utilities for conversions unique to ArcGIS
 
 '''
+import arcpy
 
-def linearUnitConversion(measure, dimension, linearUnit, decimalPlaces=2):
+def getGeometryConversionFactor(linearUnits, dimension):
+    """ Returns conversion factor for converting a value to either meters or square meters. """
+        
+    if dimension.upper() == 'LENGTH':
+        conversionFactor = getMeterConversionFactor(linearUnits)
+    elif dimension.upper() == 'AREA':
+        conversionFactor = getSqMeterConversionFactor(linearUnits)
+    else:
+        conversionFactor = 0
+    
+    return conversionFactor
+
+
+def convertToMeters(measure, linearUnit, decimalPlaces=2):
     """ Convert distance in a specified linear unit to meters.
     
     **Description:**
         
-        The first argument is a string, integer or float representing distance or area measure.  This value is converted 
-        to meters or square meters by applying a conversion factor. The dimension argument determines which conversion
-        factor is applied.  The result is then rounded to the number of decimal places specified in the fourth argument 
-        (the default is two decimal places).  A float is always returned. If the linear unit is not found in the 
-        conversion dictionary, a value of 0 is returned.  
+        The first argument is a string, integer or float representing a distance measure.  This value is converted 
+        to meters by applying a conversion factor. The result is then rounded to the number of decimal places specified 
+        in the third argument (the default is two decimal places).  A float is always returned. If the linear unit is 
+        not found in the conversion dictionary, a value of 0 is returned.  
         
     **Arguments:**
         
-        * *measure* - A string, integer or float representing a distance or area measure
-        * *dimension* - A string specifying either 'LENGTH' or 'AREA'
+        * *measure* - A string, integer or float representing a distance measure
         * *linearUnit* - A string with the ArcGIS 10 linear unit type description
         * *decimalPlaces* - An integer to specify the number of decimal places to round to
     
@@ -25,30 +37,51 @@ def linearUnitConversion(measure, dimension, linearUnit, decimalPlaces=2):
         
     """      
     
-    if dimension.upper() == 'LENGTH':
-        conversionFactor = factorToMeters(linearUnit)
-    elif dimension.upper() == 'AREA':
-        conversionFactor = factorToSquareMeters(linearUnit)
-    else:
-        conversionFactor = 0
-
+    conversionFactor = getMeterConversionFactor(linearUnit)
     meters = float(measure) * conversionFactor
     
     return round(meters, decimalPlaces)
 
 
-def factorToMeters(key):
+def convertToSqMeters(measure, linearUnit, decimalPlaces=2):
+    """ Convert distance in a specified linear unit to square meters.
+    
+    **Description:**
+        
+        The first argument is a string, integer or float representing an area measure.  This value is converted 
+        to square meters by applying a conversion factor. The result is then rounded to the number of decimal places 
+        specified in the third argument (the default is two decimal places).  A float is always returned. If the linear 
+        unit is not found in the conversion dictionary, a value of 0 is returned.  
+        
+    **Arguments:**
+        
+        * *measure* - A string, integer or float representing an area measure
+        * *linearUnit* - A string with the ArcGIS 10 linear unit type description
+        * *decimalPlaces* - An integer to specify the number of decimal places to round to
+    
+    **Returns:**
+        * float
+        
+    """      
+    
+    conversionFactor = getSqMeterConversionFactor(linearUnit)
+    meters = float(measure) * conversionFactor
+    
+    return round(meters, decimalPlaces)
+
+
+def getMeterConversionFactor(linearUnitName):
     """ Provides the conversion factor necessary to convert values in an ArcGIS 10 linear unit type to meters.
     
     **Description:**
         
-        The 'key' argument is the linear unit description used in ArcGIS 10 Geographic Coordinate Systems.
+        The 'linearUnitName' argument is the linear unit description used in ArcGIS 10 Geographic Coordinate Systems.
         The conversion factor to convert distance measures to meters is returned. A float is always returned. If the
-        key is not found in the dictionary, a value of 0 is returned.   
+        linearUnitName is not found in the dictionary, a value of 0 is returned.   
         
     **Arguments:**
         
-        * *key* - A string representing the linear unit description used in ArcGIS 10 Geographic Coordinate Systems
+        * *linearUnitName* - A string representing the linear unit description used in ArcGIS 10 Geographic Coordinate Systems
     
     **Returns:**
         * float
@@ -112,26 +145,27 @@ def factorToMeters(key):
                            'Yard_US': 0.914401828803658
                            })
 
-    if key in conversionDict:
-        conversionFactor = conversionDict[key]
+    if linearUnitName in conversionDict:
+        conversionFactor = conversionDict[linearUnitName]
     else:
         conversionFactor = 0    
     
+    # arcpy.AddMessage('linear units = %s and conversion factor = %s' % (linearUnitName, conversionFactor))
     return conversionFactor
 
 
-def factorToSquareMeters(key):
+def getSqMeterConversionFactor(linearUnitName):
     """ Provides the conversion factor necessary to convert values in an ArcGIS 10 linear unit type to square meters.
     
     **Description:**
         
-        The 'key' argument is the linear unit description used in ArcGIS 10 Geographic Coordinate Systems.
+        The 'linearUnitName' argument is the linear unit description used in ArcGIS 10 Geographic Coordinate Systems.
         The conversion factor to convert area measures to square meters is returned. A float is always returned. If the
-        key is not found in the dictionary, a value of 0 is returned.   
+        linearUnitName is not found in the dictionary, a value of 0 is returned.   
         
     **Arguments:**
         
-        * *key* - A string representing the linear unit description used in ArcGIS 10 Geographic Coordinate Systems
+        * *linearUnitName* - A string representing the linear unit description used in ArcGIS 10 Geographic Coordinate Systems
     
     **Returns:**
         * float
@@ -195,10 +229,10 @@ def factorToSquareMeters(key):
                            'Yard_US': 0.836130704519474
                            })
 
-    if key in conversionDict:
-        conversionFactor = conversionDict[key]
-    else:
-        conversionFactor = 0    
-    
-    return conversionFactor
+    try:
+        conversionFactor = conversionDict[linearUnitName]
+        return conversionFactor
+    except KeyError:
+        arcpy.AddError("Linear Units in output coordinate system are in DEGREES are undefined or are not found in lookup dictionary")
+
 
