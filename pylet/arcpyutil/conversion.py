@@ -1,7 +1,6 @@
 ''' Utilities for conversions unique to ArcGIS
 
 '''
-import arcpy
 
 def getGeometryConversionFactor(linearUnits, dimension):
     """ Returns conversion factor for converting a value to either meters or square meters. """
@@ -232,7 +231,8 @@ def getSqMeterConversionFactor(linearUnitName):
     try:
         conversionFactor = conversionDict[linearUnitName]
         return conversionFactor
-    except KeyError:
-        arcpy.AddError("Linear Units in output coordinate system are in DEGREES are undefined or are not found in lookup dictionary")
+    except:
+        raise
+
 
 
