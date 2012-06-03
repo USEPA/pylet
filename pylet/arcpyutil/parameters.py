@@ -42,7 +42,11 @@ def getParametersAsText(indexesForCatalogPath = []):
     while True:
         try:     
             if count in indexesForCatalogPath:
-                parameterAsText = arcpy.Describe(arcpy.GetParameter(count)).catalogPath.strip("'")
+                # check if input parameter is a lyr file with arcpy.Exists
+                if arcpy.Exists(arcpy.GetParameter(count)):
+                    parameterAsText = arcpy.Describe(arcpy.GetParameter(count)).catalogPath.strip("'")
+                else:
+                    parameterAsText = arcpy.Describe(arcpy.GetParameter(count).dataSource).catalogPath.strip("'")
             else:
                 parameterAsText = arcpy.GetParameterAsText(count).strip("'")
                 
