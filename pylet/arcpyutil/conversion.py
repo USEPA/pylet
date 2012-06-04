@@ -144,13 +144,11 @@ def getMeterConversionFactor(linearUnitName):
                            'Yard_US': 0.914401828803658
                            })
 
-    if linearUnitName in conversionDict:
+    try:
         conversionFactor = conversionDict[linearUnitName]
-    else:
-        conversionFactor = 0    
-    
-    # arcpy.AddMessage('linear units = %s and conversion factor = %s' % (linearUnitName, conversionFactor))
-    return conversionFactor
+        return conversionFactor
+    except:
+        raise
 
 
 def getSqMeterConversionFactor(linearUnitName):
