@@ -39,3 +39,37 @@ def getAreasByIdDict(polyFc, keyField):
         zoneAreaDict[key] = (area)
 
     return zoneAreaDict
+
+
+def findOverlaps(polyFc):
+    """ Get the OID values for polygon features that have areas of overlap with other polygons in the same theme.
+
+        **Description:**
+        
+        Identify polygons that have overlapping areas with other polygons in the same theme and generate a set of their 
+        OID field values.          
+        
+        
+        **Arguments:**
+        
+        * *polyFc* - Polygon Feature Class
+        
+        
+        **Returns:** 
+        
+        * set - A set of OID field values
+
+        
+    """ 
+    
+    overlapSet = set()    
+    oidField = arcpy.ListFields(polyFc, '', 'OID')[0]
+    
+    for row in arcpy.SearchCursor(polyFc, '', '', 'Shape; %s' % oidField.name):
+        for row2 in arcpy.SearchCursor(polyFc, '', '', 'Shape; %s' % oidField.name):
+            if row2.Shape.overlaps(row.Shape) or row2.Shape.contains(row.Shape) and not row2.Shape.equals(row.Shape):
+                overlapSet.add(row.getValue(oidField.name))
+                overlapSet.add(row2.getValue(oidField.name))
+    
+    return overlapSet
+
