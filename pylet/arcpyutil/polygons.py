@@ -47,7 +47,8 @@ def findOverlaps(polyFc):
         **Description:**
         
         Identify polygons that have overlapping areas with other polygons in the same theme and generate a set of their 
-        OID field values.          
+        OID field value. Nested polygons (i.e., polygons contained within the boundaries of another polygon) are also
+        selected with this routine. 
         
         
         **Arguments:**
@@ -67,6 +68,7 @@ def findOverlaps(polyFc):
     
     for row in arcpy.SearchCursor(polyFc, '', '', 'Shape; %s' % oidField.name):
         for row2 in arcpy.SearchCursor(polyFc, '', '', 'Shape; %s' % oidField.name):
+            # check to see if the polygon overlaps the second shape, or if the second shape is nested within
             if row2.Shape.overlaps(row.Shape) or row2.Shape.contains(row.Shape) and not row2.Shape.equals(row.Shape):
                 overlapSet.add(row.getValue(oidField.name))
                 overlapSet.add(row2.getValue(oidField.name))
