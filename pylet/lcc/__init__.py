@@ -32,7 +32,8 @@ class LandCoverMetadata(object):
         
         * *metadataNode* - metadata-`Node`_ loaded from a lcc file
        
-    """    
+    """
+    
     #: The name of the Land Cover Classification
     name = None
     
