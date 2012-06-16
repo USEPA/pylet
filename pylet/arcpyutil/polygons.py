@@ -5,7 +5,7 @@
 
 import arcpy
 
-def getAreasByIdDict(polyFc, keyField):
+def getIdAreaDict(polyFc, keyField):
     """ Get a dictionary with polygon areas by an id taken from a specified field.
 
         **Description:**

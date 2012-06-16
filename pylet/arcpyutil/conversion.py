@@ -76,7 +76,7 @@ def getMeterConversionFactor(linearUnitName):
         
         The 'linearUnitName' argument is the linear unit description used in ArcGIS 10 Geographic Coordinate Systems.
         The conversion factor to convert distance measures to meters is returned. A float is always returned. If the
-        linearUnitName is not found in the dictionary, a value of 0 is returned.   
+        linearUnitName is not found in the dictionary, an exception occurs.   
         
     **Arguments:**
         
@@ -158,7 +158,7 @@ def getSqMeterConversionFactor(linearUnitName):
         
         The 'linearUnitName' argument is the linear unit description used in ArcGIS 10 Geographic Coordinate Systems.
         The conversion factor to convert area measures to square meters is returned. A float is always returned. If the
-        linearUnitName is not found in the dictionary, a value of 0 is returned.   
+        linearUnitName is not found in the dictionary, an exception occurs.   
         
     **Arguments:**
         
