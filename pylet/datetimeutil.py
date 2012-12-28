@@ -5,8 +5,7 @@
     .. _generator: http://docs.python.org/tutorial/classes.html#generators
 
 '''
-from datetime import timedelta
-import datetime
+from datetime import datetime
 
 def dateRange(startDate, endDate):
     """ A `generator`_ for days as `date`_ object from *startDate* up to and including *endDate*
@@ -30,7 +29,7 @@ def dateRange(startDate, endDate):
     
     
     for n in range((endDate - startDate).days):
-        yield startDate + timedelta(n)
+        yield startDate + datetime.timedelta(n)
 
 def getDateObjectFromString(dateString, setToFirstOfMonth=False):    
     """ Convert date in different string formats to a `date`_ object.
@@ -116,6 +115,80 @@ def getDateStringFromObject(date, delimiter="-"):
     return "{0}{3}{1:02d}{3}{2:02d}".format(date.year, date.month, date.day, delimiter)
 
 
+class DateTimer:
+    ''' Handy timer that reports start time, end time and delta time
 
+        report:(default=True) If True, prints automatically
+
+        Example output:
+
+            Started: 2012-01-23 14:40:37
+            Finished: 2012-01-23 14:40:47 (Elapsed: 0:00:10)
+
+    '''
+
+    NO_START_MSG = "Timer was never started."
+    FINISH_MSG = "Finished: {0} (Elapsed: {1})"
+    START_MSG = "Started: {0}"
+    SPLIT_MSG = "Split: {0} (Elapsed: {1})"
+
+    def __init__(self, report=True):
+
+        self.report = report
+        self.startDateTime = None
+        self.endDateTime = None
+        self.deltaTime = None
+        self.splitTime = None
+
+    def start(self):
+
+        self.__init__(self.report)
+        self.startDateTime = datetime.now()
+        self.splitTime = self.startDateTime
+        self.endDateTime = None
+
+        if self.report:
+            return self.printStart()
+
+    def stop(self):
+        self.endDateTime = datetime.now()
+        if self.startDateTime:
+            self.deltaTime = self.endDateTime - self.startDateTime
+
+        if self.report:
+            return self.printEnd()
+
+    def split(self):
+        newSplitTime = datetime.now()
+        if self.splitTime:
+            self.deltaTime = newSplitTime - self.splitTime
+        self.splitTime = newSplitTime
+        
+        if self.report:
+            return self.printEnd()
+
+    def printStart(self):
+        if self.startDateTime:
+            return self.START_MSG.format(self.datetimeToString(self.startDateTime))
+        else:
+            return self.NO_START_MSG
+
+    def printEnd(self):
+        if self.deltaTime:
+            return self.FINISH_MSG.format(self.datetimeToString(self.endDateTime), self.deltaToString(self.deltaTime))
+        else:
+            return self.NO_START_MSG
+    
+    def printSplit(self):
+        if self.deltaTime:
+            return self.SPLIT_MSG.format(self.datetimeToString(self.splitTime), self.deltaToString(self.deltaTime))
+        else:
+            return self.NO_START_MSG
+            
+    def datetimeToString(self, dateTimeObject):
+        return str(dateTimeObject).split(".")[0]
+
+    def deltaToString(self, delta):
+        return str(delta).split(".")[0]
 
 
