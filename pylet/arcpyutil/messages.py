@@ -8,7 +8,7 @@ def AddMsg(msg, severity=0):
     # Adds a Message (in case this is run as a tool)
     # and also prints the message to the screen (standard output)
     # 
-    print msg
+    #print msg
 
     # Split the message on \n first, so that if it's multiple lines, 
     #  a GPMessage will be added for each line
