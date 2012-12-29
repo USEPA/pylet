@@ -165,7 +165,7 @@ class DateTimer:
         self.splitTime = newSplitTime
         
         if self.report:
-            return self.printEnd()
+            return self.printSplit()
 
     def printStart(self):
         if self.startDateTime:
