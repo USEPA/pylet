@@ -31,6 +31,8 @@ class loopProgress:
         self.total = total
         self.startTime = datetime.datetime.now()
         self.increment = int(total/10.0)
+        if self.increment == 0: # handle case where total is less than five and the int function rounds down to zero
+            self.increment = 1 # avoid divide-by-zero error by setting equal to 1.
     
     def update(self):
         self.count += 1
