@@ -258,7 +258,7 @@ def makeTextID(field,table):
     
     **Returns:**
     
-        * textFieldName - validated field name of added field.
+        * *textFieldName* - validated field name of added field.
         
     '''
     # Obtain valid fieldname
@@ -270,3 +270,28 @@ def makeTextID(field,table):
     # Since this field will be used in joins, index the field.
     arcpy.AddIndex_management(table, textFieldName, "#", "UNIQUE")
     return textFieldName
+
+def valueDelimiter(fieldType):
+    '''Utility for adding the appropriate delimiter to a value in a whereclause.
+    ** Description: **
+        
+        If the field is a string type, the values must be enclosed in single quotes.  If the field is not a string,
+        the value itself needs to be converted to a python string to be safely concatenated.
+    
+    **Arguments:**
+    
+        * *fieldType* - arcpy FieldType value 
+    
+    **Returns:**
+    
+        * *delimitValue* - a function that will either enclose a string in quotes or convert to python string object.
+    '''
+    if fieldType == 'String':
+        # If the field type is string, enclose the value in single quotes
+        def delimitValue(value):
+            return "'" + value + "'"
+    else:
+        # Otherwise the string is numeric, just convert it to a Python string type for concatenation with no quotes.
+        def delimitValue(value):
+            return str(value)
+    return delimitValue
