@@ -264,7 +264,7 @@ def makeTextID(field,table):
     # Obtain valid fieldname
     textFieldName = arcpy.ValidateFieldName("txt" + field.name, table)
     # Add the output text field
-    arcpy.AddField_management(table,textFieldName,"TEXT","","",30)
+    arcpy.AddField_management(table,textFieldName,"TEXT","#","#","30")
     # Calculate the field values
     arcpy.CalculateField_management(table, textFieldName,'!'+ field.name +'!',"PYTHON")
     # Since this field will be used in joins, index the field.
