@@ -37,16 +37,15 @@ def getParametersAsText(indexesForCatalogPath = []):
     
     """ 
   
-    count = 0
     textParameters = []
-    
-    while True:
-        try: 
+    total = arcpy.GetArgumentCount()
+    for count in range(0,total):
+        try:
             if count in indexesForCatalogPath:
-#                if hasattr(arcpy.GetParameter(count), "value"):
-#                    arcpy.AddMessage("Parameter {0} has value attibute".format(count))
-#                else:
-#                    arcpy.AddMessage("Parameter {0} has NO value attibute".format(count))
+    #                if hasattr(arcpy.GetParameter(count), "value"):
+    #                    arcpy.AddMessage("Parameter {0} has value attibute".format(count))
+    #                else:
+    #                    arcpy.AddMessage("Parameter {0} has NO value attibute".format(count))
                     
                 # check if input parameter is a lyr file with arcpy.Exists
                 if arcpy.Exists(arcpy.GetParameter(count)):
@@ -58,9 +57,7 @@ def getParametersAsText(indexesForCatalogPath = []):
                 
             textParameters.append(parameterAsText)
         except:
-            break
-     
-        count += 1
+            pass
     
     return textParameters   
 
