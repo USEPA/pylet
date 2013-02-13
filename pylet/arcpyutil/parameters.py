@@ -57,7 +57,9 @@ def getParametersAsText(indexesForCatalogPath = []):
                 
             textParameters.append(parameterAsText)
         except:
-            pass
+            # We're going to make an assumption that something went wrong with getting parameters, and to preserve
+            # the argument index, add an ESRI null "#".  
+            textParameters.append("#")
     
     return textParameters   
 
