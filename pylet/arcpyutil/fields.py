@@ -263,12 +263,16 @@ def makeTextID(field,table):
     '''
     # Obtain valid fieldname
     textFieldName = arcpy.ValidateFieldName("txt" + field.name, table)
-    # Add the output text field
-    arcpy.AddField_management(table,textFieldName,"TEXT","#","#","30")
+    # Test for Schema Lock
+    if arcpy.TestSchemaLock(table):
+        # Add the output text field
+        arcpy.AddField_management(table,textFieldName,"TEXT","#","#","30") 
+    else: 
+        arcpy.AddMessage("Unable to acquire the necessary schema lock to add the new field")
     # Calculate the field values
     arcpy.CalculateField_management(table, textFieldName,'!'+ field.name +'!',"PYTHON")
     # Since this field will be used in joins, index the field.
-    arcpy.AddIndex_management(table, textFieldName, "#", "UNIQUE")
+    arcpy.AddIndex_management(table, textFieldName, "idIDX", "UNIQUE")
     return textFieldName
 
 def valueDelimiter(fieldType):
@@ -295,3 +299,28 @@ def valueDelimiter(fieldType):
         def delimitValue(value):
             return str(value)
     return delimitValue
+
+def getUniqueValues(table,field):
+    '''Utility for creating a python list of unique values from a specific field in a table.
+    ** Description: **
+        
+        This function will open a search cursor on the field in the specified table and iterate through all the rows
+        in the table and collect all unique field values in a python list object.
+    
+    **Arguments:**
+    
+        * *table* - any dataset with a table.
+        * *field* - the field name from which to collect unique values    
+    **Returns:**
+    
+        * *valueList* - a python list of unique values
+    '''
+    valueList = []
+    rows = arcpy.SearchCursor(table,"","",field)
+    for row in rows:
+        value = row.getValue(field)
+        if value not in valueList:
+            valueList.append(value)
+        del row
+    del rows
+    return valueList
