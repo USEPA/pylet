@@ -74,4 +74,3 @@ def findOverlaps(polyFc):
                 overlapSet.add(row2.getValue(oidField.name))
     
     return overlapSet
-
