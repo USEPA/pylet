@@ -44,4 +44,37 @@ def getRasterPointFromRowColumn(raster, row, column):
 
     point = _arcpy.Point(x,y)
     
-    return point 
+    return point
+
+
+def getRasterValues(inRaster):
+    """Utility for creating a python list of values from a raster's VALUE field.
+    
+    ** Description: **
+        
+        This function will open a search cursor on the raster and iterate through all the rows
+        and collect all values in a python list object. By design, values in the raster's VALUE
+        field are unique.
+    
+    **Arguments:**
+    
+        * *raster* - any raster dataset with an attribute table.
+   
+    **Returns:**
+    
+        * *valuesList* - a python list of unique values
+        
+    """
+    
+    # warn user if input land cover grid has values not defined in LCC file
+    rows = _arcpy.SearchCursor(inRaster) 
+
+    valuesList = []
+    for row in rows:
+        valuesList.append(row.getValue("VALUE"))
+
+    del row
+    del rows
+        
+    return valuesList
+        
