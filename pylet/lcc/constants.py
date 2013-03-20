@@ -7,7 +7,7 @@
 
 
 # Files
-XmlFileExtension = ".lcc"
+XmlFileExtension = ".xml"
 PredefinedFileDirName = "LandCoverClassifications"
 UserDefinedOptionDescription = "User Defined"
 
