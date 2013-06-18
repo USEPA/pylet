@@ -176,6 +176,117 @@ class LandCoverClass(object):
         for attributeName, attributeValue in classNode.attributes.items():
             self.attributes[str(attributeName)] = str(attributeValue)
        
+    def addClass(self, classId, name, classFilter=None, lcpField=None):            # *************************************
+#        print "Filter is ", filter
+        print "\n***************************"
+        print "IN ADDCLASS in LandCoverClass"
+        print "*****************************"
+        self.classId = classId
+        self.name = name
+        if classFilter:
+            self.attributes['classFilter'] = str(classFilter)
+        if lcpField:
+            self.attributes['lcpField'] = str(lcpField)
+        self.attributes['id'] = str(classId)
+        self.attributes['name'] = str(name)
+        
+#        topLevelClass = 
+#        classId = id
+#        name = className
+
+class LandCoverClasses(dict):
+    """ This class holds all :py:class:`LandCoverClass` objects.
+
+    **Description:**
+
+        This class holds all of the :py:class:`LandCoverClass` objects loaded from the LCC XML file.          
+
+    **Arguments:**
+
+        * Not applicable
+
+    """
+
+    # Private frozenset for all unique values
+    _uniqueValues = None
+    
+    #: Boolean for exclusion of empty classes
+    excludeEmptyClasses = None
+    
+    #: Top level classes which reside in the root of the <classes> node and have no parent
+    topLevelClasses = None
+
+    def __init__(self, classesNode=None, excludeEmptyClasses=True):
+
+        self.excludeEmptyClasses = excludeEmptyClasses
+        
+        if not classesNode is None:
+            self._loadClassesNode(classesNode)
+        
+
+    def _loadClassesNode(self, classesNode):
+
+        self.topLevelClasses = []
+
+        for childNode in classesNode.childNodes:
+
+            if isinstance(childNode, minidom.Element) and childNode.tagName == constants.XmlElementClass:
+                topLevelClass = LandCoverClass(childNode, None, self.excludeEmptyClasses)
+                self.topLevelClasses.append(topLevelClass)
+                
+                # Add topLevelClass and all its descendents to dictionary
+                self[topLevelClass.classId] = topLevelClass
+                
+                for descendentClass in self._getDescendentClasses(topLevelClass):
+                    self[descendentClass.classId] = descendentClass
+                
+                
+    def _getDescendentClasses(self, landCoverClass):
+        
+        descendentClasses = []
+
+        for childClass in landCoverClass.childClasses:
+            print "childClass is", childClass.name
+            descendentClasses += self._getDescendentClasses(childClass)
+            descendentClasses.append(childClass)       
+        
+        return descendentClasses
+
+    def getUniqueValueIds(self):
+        """  Get a `frozenset`_ containing all unique valueIds defined in all classes.
+
+        **Description:**
+
+            The valueIds defined as excluded in the values section are not included.
+
+        **Arguments:**
+
+            * Not applicable
+
+        **Returns:** 
+            
+            * `frozenset`_
+        
+        """
+        
+        if self._uniqueValues is None:
+            
+            # Assemble all values found in all classes, repeats are allowed
+            tempValues = []
+            for landCoverClass in self.itervalues():
+                tempValues.extend(landCoverClass.uniqueValueIds)
+
+            # repeats purged on conversion to frozenset
+            self._uniqueValues = frozenset(tempValues)
+            
+        return self._uniqueValues
+    
+    def addTopLevelClass(self, LandCoverClass):
+        print "####################################"
+        print "In TopLevelClass in LandCoverClasses"
+        print "####################################"
+        self.topLevelClasses.append(LandCoverClass)
+        self[LandCoverClass.classId] = LandCoverClass
         
 class LandCoverValue(object): 
     """ This class holds all of the properties associated with an LCC value-`Node`_.
@@ -206,6 +317,7 @@ class LandCoverValue(object):
         
         if not valueNode is None:
             self._loadLccValueNode(valueNode)
+#            print "This is valueNode", valueNode.items
         else:
             self.coefficients = {}
     
@@ -266,6 +378,16 @@ class LandCoverValue(object):
             coeffValue = None
             
         return coeffValue 
+    
+    def addValues(self, id, name, excluded):
+        self.valueId = id
+        self.name = name
+        if excluded == "yes":
+            self.excluded = "True"
+#        print "LCV valueId is ", self.valueId
+#        print "LCV name is ", self.name
+#        print "LCV excluded is ", self.excluded
+        
 
 
 class LandCoverValues(dict):
@@ -384,94 +506,6 @@ class LandCoverValues(dict):
         self.__excludedValueIds = frozenset(excludedValueIds)
         self.__includedValueIds = frozenset(includedValueIds)        
                
-        
-class LandCoverClasses(dict):
-    """ This class holds all :py:class:`LandCoverClass` objects.
-
-    **Description:**
-
-        This class holds all of the :py:class:`LandCoverClass` objects loaded from the LCC XML file.          
-
-    **Arguments:**
-
-        * Not applicable
-
-    """
-
-    # Private frozenset for all unique values
-    _uniqueValues = None
-    
-    #: Boolean for exclusion of empty classes
-    excludeEmptyClasses = None
-    
-    #: Top level classes which reside in the root of the <classes> node and have no parent
-    topLevelClasses = None
-
-    def __init__(self, classesNode=None, excludeEmptyClasses=True):
-
-        self.excludeEmptyClasses = excludeEmptyClasses
-        
-        if not classesNode is None:
-            self._loadClassesNode(classesNode)
-        
-
-    def _loadClassesNode(self, classesNode):
-
-        self.topLevelClasses = []
-
-        for childNode in classesNode.childNodes:
-
-            if isinstance(childNode, minidom.Element) and childNode.tagName == constants.XmlElementClass:
-                topLevelClass = LandCoverClass(childNode, None, self.excludeEmptyClasses)
-                self.topLevelClasses.append(topLevelClass)
-                
-                # Add topLevelClass and all its descendents to dictionary
-                self[topLevelClass.classId] = topLevelClass
-                
-                for descendentClass in self._getDescendentClasses(topLevelClass):
-                    self[descendentClass.classId] = descendentClass
-                
-                
-    def _getDescendentClasses(self, landCoverClass):
-        
-        descendentClasses = []
-
-        for childClass in landCoverClass.childClasses:
-            descendentClasses += self._getDescendentClasses(childClass)
-            descendentClasses.append(childClass)       
-        
-        return descendentClasses
-
-    def getUniqueValueIds(self):
-        """  Get a `frozenset`_ containing all unique valueIds defined in all classes.
-
-        **Description:**
-
-            The valueIds defined as excluded in the values section are not included.
-
-        **Arguments:**
-
-            * Not applicable
-
-        **Returns:** 
-            
-            * `frozenset`_
-        
-        """
-        
-        if self._uniqueValues is None:
-            
-            # Assemble all values found in all classes, repeats are allowed
-            tempValues = []
-            for landCoverClass in self.itervalues():
-                tempValues.extend(landCoverClass.uniqueValueIds)
-
-            # repeats purged on conversion to frozenset
-            self._uniqueValues = frozenset(tempValues)
-            
-        return self._uniqueValues
-      
-      
 class LandCoverCoefficients(dict):
     """ This class holds :py:class:`LandCoverCoefficient` objects.
 
@@ -518,7 +552,62 @@ class LandCoverCoefficients(dict):
             lcCoef = LandCoverCoefficient(coefficientNode)
             self[lcCoef.coefId] = lcCoef
             
-      
+class LandCoverCoefficient(object):
+    """ This class holds all of the properties associated with a LCC coefficient-`Node`_.
+
+    **Description:**
+        
+        This class holds all of the information stored in a <coefficient> tag within XML file.  Some properties are
+        not available depending on the context.  The *coefId*, *name* and *fieldName* properties are available from the 
+        coefficients section.  The *coefId* and *value* are availiable when associated with a value.          
+        
+    **Arguments:**
+        
+        * *coefficientNode* - LCC coefficient-`Node`_ loaded from a lcc file
+
+    """
+    
+    #: The unique identifier for the coefficient
+    coefId = ""
+    
+    #: The name of the coefficient
+    name = ""
+    
+    #: The name of the field use in output tables
+    fieldName = ""
+    
+    #: The actual coefficient value
+    value = ""
+    
+    
+    def __init__(self, coefficientNode=None):
+        
+        if not coefficientNode is None:
+            self._loadLccCoefficientNode(coefficientNode)
+    
+    
+    def _loadLccCoefficientNode(self, coefficientNode):
+        """  This method Loads a LCC coefficient-`Node`_ to assign all properties associated with this class.
+        
+        **Description:**
+            
+            If the LCC coefficient-`Node`_ was not provided as an argument when this class was instantiated, you can load 
+            one to assign all properties associated with this class.                        
+            
+            See the class description for additional details
+        
+        """ 
+
+        self.coefId = coefficientNode.getAttribute(constants.XmlAttributeId)
+        self.name = coefficientNode.getAttribute(constants.XmlAttributeName)
+        self.fieldName = coefficientNode.getAttribute(constants.XmlAttributeFieldName)
+        
+        try:
+            self.value = float(coefficientNode.getAttribute(constants.XmlAttributeValue))
+        except:
+            self.value = 0.0
+
+     
 class LandCoverClassification(object):
     """ This class holds all the details about a Land Cover Classification(LCC).
 
@@ -594,9 +683,11 @@ class LandCoverClassification(object):
         self.metadata = LandCoverMetadata(metadataNode)   
 
         # Load Coefficients
-        coefficientsNode = lccDocument.getElementsByTagName(constants.XmlElementCoefficients)[0]
-        self.coefficients = LandCoverCoefficients(coefficientsNode)
-        
+        try:
+            coefficientsNode = lccDocument.getElementsByTagName(constants.XmlElementCoefficients)[0]
+            self.coefficients = LandCoverCoefficients(coefficientsNode)
+        except:
+            print "No coefficients"
         
     def getUniqueValueIds(self):
         """  Get a `frozenset`_ containing all unique valueIds in the Land Cover Classification.
@@ -654,66 +745,3 @@ class LandCoverClassification(object):
         
         return self.__uniqueValueIdsWithExcludes
     
-
-
-class LandCoverCoefficient(object):
-    """ This class holds all of the properties associated with a LCC coefficient-`Node`_.
-
-    **Description:**
-        
-        This class holds all of the information stored in a <coefficient> tag within XML file.  Some properties are
-        not available depending on the context.  The *coefId*, *name* and *fieldName* properties are available from the 
-        coefficients section.  The *coefId* and *value* are availiable when associated with a value.          
-        
-    **Arguments:**
-        
-        * *coefficientNode* - LCC coefficient-`Node`_ loaded from a lcc file
-
-    """
-    
-    #: The unique identifier for the coefficient
-    coefId = ""
-    
-    #: The name of the coefficient
-    name = ""
-    
-    #: The name of the field use in output tables
-    fieldName = ""
-    
-    #: The actual coefficient value
-    value = ""
-    
-    
-    def __init__(self, coefficientNode=None):
-        
-        if not coefficientNode is None:
-            self._loadLccCoefficientNode(coefficientNode)
-    
-    
-    def _loadLccCoefficientNode(self, coefficientNode):
-        """  This method Loads a LCC coefficient-`Node`_ to assign all properties associated with this class.
-        
-        **Description:**
-            
-            If the LCC coefficient-`Node`_ was not provided as an argument when this class was instantiated, you can load 
-            one to assign all properties associated with this class.                        
-            
-            See the class description for additional details
-        
-        """ 
-
-        self.coefId = coefficientNode.getAttribute(constants.XmlAttributeId)
-        self.name = coefficientNode.getAttribute(constants.XmlAttributeName)
-        self.fieldName = coefficientNode.getAttribute(constants.XmlAttributeFieldName)
-        
-        try:
-            self.value = float(coefficientNode.getAttribute(constants.XmlAttributeValue))
-        except:
-            self.value = 0.0
-
-
-  
-
-
-
-
