@@ -7,7 +7,7 @@
 
 
 # Files
-XmlFileExtension = ".lcc"
+XmlFileExtension = ".xml"
 PredefinedFileDirName = "LandCoverClassifications"
 UserDefinedOptionDescription = "User Defined"
 
@@ -29,7 +29,9 @@ XmlAttributeDescription = "description"
 XmlAttributeNodata = "excluded"
 XmlAttributeLcpField = "lcpField"
 XmlAttributeRlcpField = "rlcpField"
-XmlAttributeLcsoField = "lcospField"
+XmlAttributeLcospField = "lcospField"
+XmlAttributeSplcpField = "splcpField"
+XmlAttributeCaeamField = "caeamField"
 XmlAttributeFilter = "filter"
 XmlAttributeValue = "value"
 XmlAttributeFieldName = "fieldName"

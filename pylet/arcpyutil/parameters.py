@@ -21,7 +21,10 @@ def getParametersAsText(indexesForCatalogPath = []):
         
         The optional *indexesForCatalogPath* argument allows you to indicate which indexes must have
         the full catalog path retrieved. For example, if the layer name is the text returned for the parameter, you can 
-        request the full path of the dataset for that parameter by adding its index to a list passed to this function.        
+        request the full path of the dataset for that parameter by adding its index to a list passed to this function. 
+        
+        This seems to be most critical for input parameters - the code produces an error for output parameters, so 
+        don't include them in the list of integer indexes       
         
         **Arguments:**
         
@@ -33,19 +36,16 @@ def getParametersAsText(indexesForCatalogPath = []):
         * list of strings
     
     """ 
-    
-
-    
-    count = 0
+  
     textParameters = []
-    
-    while True:
-        try: 
+    total = arcpy.GetArgumentCount()
+    for count in range(0,total):
+        try:
             if count in indexesForCatalogPath:
-#                if hasattr(arcpy.GetParameter(count), "value"):
-#                    arcpy.AddMessage("Parameter {0} has value attibute".format(count))
-#                else:
-#                    arcpy.AddMessage("Parameter {0} has NO value attibute".format(count))
+    #                if hasattr(arcpy.GetParameter(count), "value"):
+    #                    arcpy.AddMessage("Parameter {0} has value attibute".format(count))
+    #                else:
+    #                    arcpy.AddMessage("Parameter {0} has NO value attibute".format(count))
                     
                 # check if input parameter is a lyr file with arcpy.Exists
                 if arcpy.Exists(arcpy.GetParameter(count)):
@@ -56,14 +56,12 @@ def getParametersAsText(indexesForCatalogPath = []):
                 parameterAsText = arcpy.GetParameterAsText(count).strip("'")
                 
             textParameters.append(parameterAsText)
-        except: 
-            break
-    
-        
-        count += 1
+        except:
+            # We're going to make an assumption that something went wrong with getting parameters, and to preserve
+            # the argument index, add an ESRI null "#".  
+            textParameters.append("#")
     
     return textParameters   
-
 
 def splitItemsAndStripDescriptions(delimitedString, descriptionDelim, parameterDelim=";"):
     """ Splits a string of delimited item-description pairs to a list of items.

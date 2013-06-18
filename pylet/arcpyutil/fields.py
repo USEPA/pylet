@@ -213,3 +213,114 @@ def convertFieldTypeKeyword(inField):
         outFieldType = "SHORT"
         
     return outFieldType
+
+
+def updateFieldProps(field):
+    ''' This function translates the properties returned by the field describe function into the 
+        parameters expected by the AddField tool
+        
+    ** Description: **
+        
+        Field objects in ArcPy have certain properties (type, nullable, and required) that don't match the expected
+        input parameters for the Add Field tool.  This tool maps properties to expected inputs.
+    
+    **Arguments:**
+    
+        * *field* - input arcpy field object
+    
+    **Returns:**
+    
+        * field - modified field object that can be used as input to Add Field tool.
+        
+    '''
+    
+    typeDictionary = {"SmallInteger":"SHORT","Integer":"LONG","Single":"FLOAT","Double":"DOUBLE","String":"TEXT",
+                      "Date":"DATE","OID":"GUID","Blob":"BLOB"}
+    field.type = typeDictionary[field.type]
+    nullDictionary = {True:"NULLABLE",False:"NON_NULLABLE"}
+    field.isNullable = nullDictionary[field.isNullable]
+    requiredDictionary = {True:"REQUIRED",False:"NON_REQUIRED"}
+    field.required = requiredDictionary[field.required]
+    return field
+
+def makeTextID(field,table):
+    ''' This function creates a copy of an existing field with the String format.
+        
+    ** Description: **
+        
+        Certain types of fields cause problems when performing joins, and Strings are generally the most reliable.
+        This function creates a new field with string format of length 30 and copies all data from the problem field.
+    
+    **Arguments:**
+    
+        * *field* - input arcpy field object
+        * *table* - name with full path of input table to be modified)
+    
+    **Returns:**
+    
+        * *textFieldName* - validated field name of added field.
+        
+    '''
+    # Obtain valid fieldname
+    textFieldName = arcpy.ValidateFieldName("txt" + field.name, table)
+    # Test for Schema Lock
+    if arcpy.TestSchemaLock(table):
+        # Add the output text field
+        arcpy.AddField_management(table,textFieldName,"TEXT","#","#","30") 
+    else: 
+        arcpy.AddMessage("Unable to acquire the necessary schema lock to add the new field")
+    # Calculate the field values
+    arcpy.CalculateField_management(table, textFieldName,'!'+ field.name +'!',"PYTHON")
+    # Since this field will be used in joins, index the field.
+    arcpy.AddIndex_management(table, textFieldName, "idIDX", "UNIQUE")
+    return textFieldName
+
+def valueDelimiter(fieldType):
+    '''Utility for adding the appropriate delimiter to a value in a whereclause.
+    ** Description: **
+        
+        If the field is a string type, the values must be enclosed in single quotes.  If the field is not a string,
+        the value itself needs to be converted to a python string to be safely concatenated.
+    
+    **Arguments:**
+    
+        * *fieldType* - arcpy FieldType value 
+    
+    **Returns:**
+    
+        * *delimitValue* - a function that will either enclose a string in quotes or convert to python string object.
+    '''
+    if fieldType == 'String':
+        # If the field type is string, enclose the value in single quotes
+        def delimitValue(value):
+            return "'" + value + "'"
+    else:
+        # Otherwise the string is numeric, just convert it to a Python string type for concatenation with no quotes.
+        def delimitValue(value):
+            return str(value)
+    return delimitValue
+
+def getUniqueValues(table,field):
+    '''Utility for creating a python list of unique values from a specific field in a table.
+    ** Description: **
+        
+        This function will open a search cursor on the field in the specified table and iterate through all the rows
+        in the table and collect all unique field values in a python list object.
+    
+    **Arguments:**
+    
+        * *table* - any dataset with a table.
+        * *field* - the field name from which to collect unique values    
+    **Returns:**
+    
+        * *valueList* - a python list of unique values
+    '''
+    valueList = []
+    rows = arcpy.SearchCursor(table,"","",field)
+    for row in rows:
+        value = row.getValue(field)
+        if value not in valueList:
+            valueList.append(value)
+        del row
+    del rows
+    return valueList
