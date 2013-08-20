@@ -43,29 +43,20 @@ def getIdAreaDict(polyFc, keyField):
 
 def findOverlaps(polyFc):
     """ Get the OID values for polygon features that have areas of overlap with other polygons in the same theme.
-
         **Description:**
-        
         Identify polygons that have overlapping areas with other polygons in the same theme and generate a set of their 
         OID field value. Nested polygons (i.e., polygons contained within the boundaries of another polygon) are also
         selected with this routine. 
-        
-        
         **Arguments:**
-        
         * *polyFc* - Polygon Feature Class
-        
-        
-        **Returns:** 
-        
-        * set - A set of OID field values
-        * dictionary - A dictionary of OIDs that have overlaps with a list of OIDs that overlap
-        * oidField.name - the oid field name
-        
-    """ 
+           
+         **Returns:** 
+         * set - A set of OID field values, a dictionary of overlaps, and OID field name
+""" 
     
-    overlapSet = set()   
-    overlapDict = {} 
+    overlapSet = set()
+    overlapDict = {}
+    
     oidField = arcpy.ListFields(polyFc, '', 'OID')[0]
     
     for row in arcpy.SearchCursor(polyFc, '', '', 'Shape; %s' % oidField.name):
@@ -75,13 +66,29 @@ def findOverlaps(polyFc):
             if row2.Shape.overlaps(row.Shape) or row2.Shape.contains(row.Shape) and not row2.Shape.equals(row.Shape):
                 overlapSet.add(row.getValue(oidField.name))
                 overlapSet.add(row2.getValue(oidField.name))
+
                 if row.getValue(oidField.name) not in overlapDict.keys():
                     idlist.append(row2.getValue(oidField.name))
                     overlapDict[row.getValue(oidField.name)] = idlist
                 elif row.getValue(oidField.name) in overlapDict.keys():
                     idlist = overlapDict[row.getValue(oidField.name)]
                     idlist.append(row2.getValue(oidField.name))
-    
+            elif row2.Shape.within(row.Shape)and not row2.Shape.equals(row.Shape):
+                print "Shape Within"
+                overlapSet.add(row.getValue(oidField.name))
+                overlapSet.add(row2.getValue(oidField.name))
+
+                if row.getValue(oidField.name) not in overlapDict.keys():
+                    idlist.append(row2.getValue(oidField.name))
+                    overlapDict[row.getValue(oidField.name)] = idlist
+                elif row.getValue(oidField.name) in overlapDict.keys():
+                    idlist = overlapDict[row.getValue(oidField.name)]
+                    idlist.append(row2.getValue(oidField.name))
+
+
+                
+##    print overlapDict
+
     return overlapSet, oidField.name, overlapDict
 
 def findNonOverlapGroups(overlapDict):
@@ -95,8 +102,7 @@ def findNonOverlapGroups(overlapDict):
         **Returns:** 
         
         * dictionary - A dictionary of OIDs that belong to a group of nonoverlapping polygons 
-
-        
+      
     """ 
     group = 1
     nonoverlapGroupDict = {}
@@ -129,11 +135,12 @@ def findNonOverlapGroups(overlapDict):
         for a in alist:
             del overlapDict[a]
         group = group + 1
+    print nonoverlapGroupDict
 
-    arcpy.AddMessage("To create non overlapping polygons, " + str(group) + " new data layers will need to be created")
+#    arcpy.AddMessage("Creating non overlapping polygons,new data layers are being created")
     return nonoverlapGroupDict
 
-def createNonOverlapLayers(overlapList, nonoverlapGroupDict, OID, inputLayer):
+def createNonOverlapLayers(overlapList, nonoverlapGroupDict, OID, inputLayer, outputLoc, ext):
     """ Create a series of nonoverlapping polygon layers
         *** Description: ****
         A series of "temporary" data layers are created that have
@@ -153,23 +160,75 @@ def createNonOverlapLayers(overlapList, nonoverlapGroupDict, OID, inputLayer):
     """ 
     strlist = []
     flist = []
+    fdsc = arcpy.Describe(inputLayer)
+    if fdsc.DataType == "ShapeFile":
+        outname = fdsc.name.split(".")[0]
+    else:
+        outname = fdsc.name
     #Create a feature layer of the polygons with no overlaps
     for o in overlapList:
         strlist.append(str(o))
         
     values = ",".join(strlist)
-    
     arcpy.MakeFeatureLayer_management(inputLayer, "No Polygons Overlap",OID + " NOT IN (" + values + ")")
-    flist.append("No Polygons Overlap")
+    if int(str(arcpy.GetCount_management("No Polygons Overlap"))) <> 0:
+#        arcpy.AddMessage("There are no polygons that do not overlap")
+#    else:
+        arcpy.FeatureClassToFeatureClass_conversion("No Polygons Overlap", outputLoc, outname + "_0" + ext)
+        flist.append(outname + "_0" + ext)
+
+    # Find the group that has the most polygons
+    mostpolys = 0
+    hiGroup = ""
+    for k in nonoverlapGroupDict.keys():
+        if len(nonoverlapGroupDict[k]) > mostpolys:
+            mostpolys = len(nonoverlapGroupDict[k])
+            hiGroup = k
+    #Append the group with the most polygs to the No Polygons Overlap layer
+    hlist = []
+    for h in nonoverlapGroupDict[hiGroup]:
+        hlist.append(str(h))
+    values = ",".join(hlist)
+    arcpy.MakeFeatureLayer_management(inputLayer,  "NoOverlap"+ str(h), OID + " IN (" + values + ")")
+    if int(str(arcpy.GetCount_management("No Polygons Overlap"))) == 0:
+        arcpy.FeatureClassToFeatureClass_conversion("NoOverlap"+ str(h), outputLoc, outname + "_0" + ext)
+        flist.append(outname + "_0" +ext)
+    else:
+        arcpy.Append_management("NoOverlap" + str(h), outputLoc + "//" + outname + "_0" + ext)
+
+    #remove key with most polygons from nonoverlapGroupDict
+    nonoverlapGroupDict.pop(hiGroup, "None")
     
     #Create a feature layer of polygons of each group of non overlapping polygons
+    num = 1
     for k in nonoverlapGroupDict.keys():
         olist = []
         for o in nonoverlapGroupDict[k]:
             olist.append(str(o))
         values = ",".join(olist)
         arcpy.MakeFeatureLayer_management(inputLayer, "NoOverlap" + str(k), OID + " IN (" + values + ")")
-        flist.append("NoOverlap" + str(k))
-    #===========================================================================
-    # return flist
-    #===========================================================================
+        arcpy.FeatureClassToFeatureClass_conversion("NoOverlap" + str(k), outputLoc, outname + "_" + str(num) + ext)
+        flist.append(outname + "_" +str(num) +ext)
+        num = num + 1
+    print flist
+
+
+    try:
+        #For each layer in flist add them to ArcMap
+        for f in flist:
+            mxd = arcpy.mapping.MapDocument("Current")
+    
+            #check to see if there is a datafame named "Layers" if yes add the layers to that frame otherwise
+            #add it to the top dataframe
+            framelist = [frm.name for frm in arcpy.mapping.ListDataFrames(mxd)]
+            if "Layers" in framelist:
+                df = arcpy.mapping.ListDataFrames(mxd, "Layers") [0]
+            else:
+                df = arcpy.mapping.ListDataFrames(mxd)[0]
+            addlayer = arcpy.mapping.Layer(outputLoc + "//"+f)
+            arcpy.mapping.AddLayer(df, addlayer, "AUTO_ARRANGE")
+        arcpy.AddMessage("Adding non overlapping polygon layer(s) to view")
+        arcpy.AddMessage("The overlap files have been saved to " + outputLoc)
+    except:
+        arcpy.AddMessage("The overlap files have been saved to " + outputLoc)
+        
