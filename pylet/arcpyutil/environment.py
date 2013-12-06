@@ -16,17 +16,19 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
     """ Get the full path to a workspace for intermediate datasets.
     
     **Description:**
-    
-        Priorities are searched to return the directory that should be used for intermediate datasets.  The priorities 
-        are as follows:
         
-        1. `env`_.scratchWorkspace - ArcGIS environment setting
-        2. `env`_.workspace - ArcGIS environment setting
-        3. `System Temp`_ - Based on system variables and existing folders
-        4. *fallBackWorkspace* - The default is None.
-         
-        It seems that some tools still have issues with spaces in the pathname, so that test will be added.
+        Priorities are searched to return the directory that should be used for intermediate datasets.  
+        Originally the "fallBackWorkspace" was the lowest priority, but after further discussion, it was determined
+        that this was actually the most intuitive and likely least problematic location for the intermediate datasets, 
+        so it was given the top priority, despite the name.  The only reason another workspace might be chosen is if
+        spaces are found in the pathname, as this apparently still causes issues for some tools.  
         
+        The priorities are as follows:
+        
+        1. *fallBackWorkspace* - This is expected to be set to the output directory for the rest of the data.
+        2. `env`_.scratchWorkspace - ArcGIS environment setting
+        3. `env`_.workspace - ArcGIS environment setting
+        4. `System Temp`_ - Based on system variables and existing folders
         
     **Arguments:**
         
@@ -38,6 +40,9 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
         * string - full path to a workspace
     
     """
+    # User supplied directory or default None
+    if spaceCheck(fallBackWorkspace):
+        return fallBackWorkspace
     
     # Scratch workspace from ArcGIS Environments
     scratchWorkspace = env.scratchWorkspace
@@ -53,10 +58,6 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
     systemTempWorkspace = tempfile.gettempdir()
     if spaceCheck(systemTempWorkspace):
         return systemTempWorkspace
-    
-    # User supplied directory or default None
-    if spaceCheck(fallBackWorkspace):
-        return fallBackWorkspace
     else:
         msg = """All available temp workspaces are either null or contain spaces, which may cause errors. Please set the 
         ScratchWorkspace geoprocessing environment setting to a directory or file geodatabase whose full path contains no spaces."""
