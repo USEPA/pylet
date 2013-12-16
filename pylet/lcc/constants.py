@@ -2,6 +2,8 @@
 
     These constants are specific to .lcc XML files including the XML elements
     and attributes used to define the classification.
+    
+    Last modified 12/09/13
 
 '''
 
@@ -10,6 +12,9 @@
 XmlFileExtension = ".xml"
 PredefinedFileDirName = "LandCoverClassifications"
 UserDefinedOptionDescription = "User Defined"
+AutoSaveFileName = "autoSave.xml"
+TimeInterval = 5000     # 1 sec = 1000 millseconds
+overwriteFieldList = ['caeamField', 'lcospField', 'lcpField', 'rlcpField', 'splcpField']
 
 
 # XML Elements
@@ -18,13 +23,15 @@ XmlElementClass = "class"
 XmlElementValues = "values"
 XmlElementValue = "value"
 XmlElementMetadata = "metadata"
+XmlElementMetaname = "name"
+XmlElementMetadescription = "description"
 XmlElementCoefficient = "coefficient"
 XmlElementCoefficients = "coefficients"
 
 
 # XML Attributes
-XmlAttributeId = "id"
-XmlAttributeName = "name"
+XmlAttributeId = "Id"
+XmlAttributeName = "Name"
 XmlAttributeDescription = "description"
 XmlAttributeNodata = "excluded"
 XmlAttributeLcpField = "lcpField"
@@ -35,3 +42,4 @@ XmlAttributeCaeamField = "caeamField"
 XmlAttributeFilter = "filter"
 XmlAttributeValue = "value"
 XmlAttributeFieldName = "fieldName"
+XmlAttributeAPMethod = "apMethod"
