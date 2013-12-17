@@ -6,7 +6,8 @@
     .. _System Temp: http://docs.python.org/library/tempfile.html#tempfile.gettempdir
     
 """
-
+import sys, os
+import string
 import tempfile
 import arcpy
 from arcpy import env
@@ -40,9 +41,19 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
         * string - full path to a workspace
     
     """
+    
     # User supplied directory or default None
     if spaceCheck(fallBackWorkspace):
-        return fallBackWorkspace
+        gdbFilename = "scratchWorkspace.gdb"
+        
+        if string.upper(fallBackWorkspace[len(fallBackWorkspace)-4:]) == ".GDB":
+            return fallBackWorkspace
+        else:
+            if not os.path.exists(fallBackWorkspace + "\\" + gdbFilename):
+                arcpy.CreateFileGDB_management(fallBackWorkspace, gdbFilename)
+            return fallBackWorkspace + "\\" + gdbFilename
+
+        #return fallBackWorkspace
     
     # Scratch workspace from ArcGIS Environments
     scratchWorkspace = env.scratchWorkspace
