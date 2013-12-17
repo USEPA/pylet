@@ -11,7 +11,7 @@
     
 """
 
-' Last Modified 12/09/13'
+' Last Modified 12/15/13'
 
 from xml.dom import minidom
 import os
@@ -798,7 +798,7 @@ class LandCoverValue(object):
         
         nodata = valueNode.getAttribute(constants.XmlAttributeNodata)
 
-        if nodata.lower() == "true":
+        if nodata.lower() == "true" or nodata == '1':
             self.excluded = True
         else:
             self.excluded = False
