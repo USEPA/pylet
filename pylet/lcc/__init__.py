@@ -1083,10 +1083,10 @@ class LandCoverCoefficient(object):
         
         """ 
 
-        self.coefId = coefficientNode.getAttribute(constants.XmlAttributeId)
-        self.name = coefficientNode.getAttribute(constants.XmlAttributeName)
-        self.fieldName = coefficientNode.getAttribute(constants.XmlAttributeFieldName)
-        self.apMethod = coefficientNode.getAttribute(constants.XmlAttributeAPMethod)
+        self.coefId = str(coefficientNode.getAttribute(constants.XmlAttributeId))
+        self.name = str(coefficientNode.getAttribute(constants.XmlAttributeName))
+        self.fieldName = str(coefficientNode.getAttribute(constants.XmlAttributeFieldName))
+        self.apMethod = str(coefficientNode.getAttribute(constants.XmlAttributeAPMethod))
         
         try:
             self.value = float(coefficientNode.getAttribute(constants.XmlAttributeValue))
@@ -1094,10 +1094,10 @@ class LandCoverCoefficient(object):
             self.value = 0.0
 
     def populateCoefficient(self, passedCoefId, passedName, passedFieldName, passedAPMethod):
-        self.coefId = unicode(passedCoefId)
-        self.name = unicode(passedName)
-        self.fieldName = unicode(passedFieldName)
-        self.apMethod = unicode(passedAPMethod)
+        self.coefId = str(passedCoefId)
+        self.name = str(passedName)
+        self.fieldName = str(passedFieldName)
+        self.apMethod = str(passedAPMethod)
     
     def deepCopyCoefficient(self,originalLccObject):
         
