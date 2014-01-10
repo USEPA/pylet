@@ -5,20 +5,21 @@
 
 import arcpy
 
-def getIdAreaDict(polyFc, keyField):
+def getIdAreaDict(polyFc, keyField, spatialRef):
     """ Get a dictionary with polygon areas by an id taken from a specified field.
 
         **Description:**
         
         For the input polygon feature class, a dictionary with the keyField as the retrieval key and polygon area as 
-        the associated value.  The polygon area will be in the same units as the datasets projection.  No check is
-        made for duplicate keys. The value for the last key encountered will be present in the dictionary.
+        the associated value.  The polygon area will be in the same units as the provided spatial reference.  No check 
+        is made for duplicate keys. The value for the last key encountered will be present in the dictionary.
         
         
         **Arguments:**
         
         * *polyFc* - Polygon Feature Class
         * *keyField* - Unique ID field
+        * *spatialRef* - Spatial Reference Object
         
         
         **Returns:** 
@@ -32,7 +33,7 @@ def getIdAreaDict(polyFc, keyField):
     SHAPE_FIELD_NAME = "Shape"
     zoneAreaDict = {}
     
-    rows = arcpy.SearchCursor(polyFc)
+    rows = arcpy.SearchCursor(polyFc, '', spatialRef)
     for row in rows:
         key = row.getValue(keyField)
         area = row.getValue(SHAPE_FIELD_NAME).area
