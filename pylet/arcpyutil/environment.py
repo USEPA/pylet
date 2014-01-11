@@ -6,14 +6,14 @@
     .. _System Temp: http://docs.python.org/library/tempfile.html#tempfile.gettempdir
     
 """
-import sys, os
+import os
 import string
 import tempfile
 import arcpy
 from arcpy import env
 
 
-def getWorkspaceForIntermediates(fallBackWorkspace=None):
+def getWorkspaceForIntermediates(gdbFilename, fallBackWorkspace=None):
     """ Get the full path to a workspace for intermediate datasets.
     
     **Description:**
@@ -33,6 +33,7 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
         
     **Arguments:**
         
+        * *gdbFilename* - Filename for the scratch geodatabase
         * *fallBackWorkspace* - Full path to a workspace fallback if all other priorities are null 
         
         
@@ -41,11 +42,10 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
         * string - full path to a workspace
     
     """
-    
+
     # User supplied directory or default None
     if spaceCheck(fallBackWorkspace):
-        gdbFilename = "scratchWorkspace.gdb"
-        
+  
         if string.upper(fallBackWorkspace[len(fallBackWorkspace)-4:]) == ".GDB":
             return fallBackWorkspace
         else:
@@ -53,7 +53,6 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
                 arcpy.CreateFileGDB_management(fallBackWorkspace, gdbFilename)
             return fallBackWorkspace + "\\" + gdbFilename
 
-        #return fallBackWorkspace
     
     # Scratch workspace from ArcGIS Environments
     scratchWorkspace = env.scratchWorkspace
@@ -64,15 +63,17 @@ def getWorkspaceForIntermediates(fallBackWorkspace=None):
     currentWorkspace = env.workspace
     if spaceCheck(currentWorkspace):
         return currentWorkspace
-    
+
     # System temp directory
     systemTempWorkspace = tempfile.gettempdir()
     if spaceCheck(systemTempWorkspace):
         return systemTempWorkspace
     else:
-        msg = """All available temp workspaces are either null or contain spaces, which may cause errors. Please set the 
-        ScratchWorkspace geoprocessing environment setting to a directory or file geodatabase whose full path contains no spaces."""
+        msg = """All available temp workspaces are either null or contain spaces, which may cause errors.
+         
+        Please set the ScratchWorkspace geoprocessing environment setting to a directory or file geodatabase whose full path contains no spaces."""
         arcpy.AddMessage(msg)
+      
         
 
 def spaceCheck(path):
