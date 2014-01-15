@@ -76,9 +76,71 @@ def getWorkspaceForIntermediates(gdbFilename, fallBackWorkspace=None):
       
         
 
+#def spaceCheck(path):
+#    """Returns true if path is not null and does not contain spaces, otherwise returns false"""
+#    if path and not " " in path:
+#        return True
+#    else: 
+#        return False
+
 def spaceCheck(path):
-    """Returns true if path is not null and does not contain spaces, otherwise returns false"""
-    if path and not " " in path:
+    if path:
         return True
-    else: 
+    else:
         return False
+    
+
+def setBufferedExtent(inPoly, inGrid, inCellSize, inWidth=None):
+    """ Sets the analysis extent to that of the input theme, but buffered, and aligned to the grid origin.
+    
+    **Description:**
+            
+        Certain metrics are sensitive to edge effects. To mitigate for that, the analysis extent should
+        be set beyond the extent of the polygon theme. This function takes the extent of the polygon theme
+        and buffers it out to a specified distance and aligns that extent to the origin of the input
+        input grid. If no specified distance is supplied, the buffer distance is one cell width. This new 
+        extent should avoid edge errors with the pff or the edge/core metrics. 
+       
+      
+    **Arguments:**
+        
+        * *inPoly* - Polygon feature layer
+        * *inGrid* - Grid layer to obtain origin
+        * *inCellSize* - The cell size used for the analysis (string)
+        * *inWidth* - Distance for buffer specified in number of cells (string)
+        
+        
+    **Returns:**
+        
+        * analysisExtent - buffered extent object
+    
+    """
+    
+    import math
+    
+    polyDesc = arcpy.Describe(inPoly)
+    polyExtent = polyDesc.extent
+    
+    gridDesc = arcpy.Describe(inGrid)
+    gridExtent = gridDesc.extent
+    
+    cellSize = float(inCellSize)
+    
+    if inWidth:
+        expandDist = (int(inWidth) + 1) * cellSize
+    else:
+        expandDist = cellSize
+    
+    # take the polygon's extent and shift its lower left point out to align with the grid's cell boundaries
+    newLLX = (((polyExtent.XMin - gridExtent.XMin)//cellSize) * cellSize) + gridExtent.XMin
+    newLLY = (((polyExtent.YMin - gridExtent.YMin)//cellSize) * cellSize) + gridExtent.YMin
+
+    # take the polygon's extent and shift its upper right point out to align with the grid's cell boundaries 
+    newURX = ((math.ceil(((polyExtent.XMax - gridExtent.XMin) / cellSize))) * cellSize) + gridExtent.XMin
+    newURY = ((math.ceil(((polyExtent.YMax - gridExtent.YMin) / cellSize))) * cellSize) + gridExtent.YMin
+  
+    # expand the coordinates of the new extent to help eliminate edge effects
+    env.extent = arcpy.Extent((newLLX-expandDist),(newLLY-expandDist),(newURX+expandDist),(newURY+expandDist))
+
+
+    
