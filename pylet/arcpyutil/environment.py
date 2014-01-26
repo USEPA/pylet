@@ -90,8 +90,9 @@ def spaceCheck(path):
         return False
     
 
-def setBufferedExtent(inPoly, inGrid, inCellSize, inWidth=None):
-    """ Sets the analysis extent to that of the input theme, but buffered, and aligned to the grid origin.
+def getBufferedExtent(inPoly, inGrid, inCellSize, inWidth=None):
+    """ Returns the extent rectangle of the area of intersection between the inPoly and the inGrid, but buffered, 
+        and aligned to the inGrid origin.
     
     **Description:**
             
@@ -112,17 +113,9 @@ def setBufferedExtent(inPoly, inGrid, inCellSize, inWidth=None):
         
     **Returns:**
         
-        * analysisExtent - buffered extent object
+        * Extent - buffered extent object
     
     """
-    
-    import math
-    
-    polyDesc = arcpy.Describe(inPoly)
-    polyExtent = polyDesc.extent
-    
-    gridDesc = arcpy.Describe(inGrid)
-    gridExtent = gridDesc.extent
     
     cellSize = float(inCellSize)
     
@@ -130,17 +123,71 @@ def setBufferedExtent(inPoly, inGrid, inCellSize, inWidth=None):
         expandDist = (int(inWidth) + 1) * cellSize
     else:
         expandDist = cellSize
+
+    alignedExtent = getAlignedExtent(inGrid, inCellSize, [inPoly])
     
+    bufferedExtent = arcpy.Extent((alignedExtent.XMin - expandDist),(alignedExtent.YMin - expandDist),
+                                  (alignedExtent.XMax + expandDist),(alignedExtent.YMax + expandDist))
+    return bufferedExtent
+
+    
+def getAlignedExtent(inGrid, inCellSize, datasetList):
+    """ Returns the extent rectangle of the area of intersection of all input themes but aligned to the inGrid origin.
+    
+    **Description:**
+             
+        This function finds the extent rectangle of the area of intersection of all inputs themes including the inGrid,
+        and adjusts its edges to align to the cell boundaries of the inGrid. 
+       
+      
+    **Arguments:**
+        
+        * *inGrid* - Grid layer to obtain origin
+        * *inCellSize* - The cell size used for the analysis (string)
+        * *datasetList* - List of feature and/or raster datasets         
+        
+    **Returns:**
+        
+        * Extent - aligned extent object
+    
+    """
+    
+    import math
+    
+    gridDesc = arcpy.Describe(inGrid)
+    gridExtent = gridDesc.extent
+    
+    cellSize = float(inCellSize)
+    
+    datasetList.append(inGrid)
+    
+    # intersect the two extents
+    coords = getIntersectionOfExtents(datasetList)
+
     # take the polygon's extent and shift its lower left point out to align with the grid's cell boundaries
-    newLLX = (((polyExtent.XMin - gridExtent.XMin)//cellSize) * cellSize) + gridExtent.XMin
-    newLLY = (((polyExtent.YMin - gridExtent.YMin)//cellSize) * cellSize) + gridExtent.YMin
+    newLLX = (((coords[0] - gridExtent.XMin)//cellSize) * cellSize) + gridExtent.XMin
+    newLLY = (((coords[1] - gridExtent.YMin)//cellSize) * cellSize) + gridExtent.YMin
 
     # take the polygon's extent and shift its upper right point out to align with the grid's cell boundaries 
-    newURX = ((math.ceil(((polyExtent.XMax - gridExtent.XMin) / cellSize))) * cellSize) + gridExtent.XMin
-    newURY = ((math.ceil(((polyExtent.YMax - gridExtent.YMin) / cellSize))) * cellSize) + gridExtent.YMin
+    newURX = ((math.ceil(((coords[2] - gridExtent.XMin) / cellSize))) * cellSize) + gridExtent.XMin
+    newURY = ((math.ceil(((coords[3] - gridExtent.YMin) / cellSize))) * cellSize) + gridExtent.YMin
   
-    # expand the coordinates of the new extent to help eliminate edge effects
-    env.extent = arcpy.Extent((newLLX-expandDist),(newLLY-expandDist),(newURX+expandDist),(newURY+expandDist))
+    alignedExtent = arcpy.Extent(newLLX,newLLY,newURX,newURY)
+    return alignedExtent
+    
+    
+def getIntersectionOfExtents(datasetList):
+    """ Determines the intersection rectangle of the input themes. Returns its lower left and upper right coordinates. """
+
+    extentsList = []
+    [extentsList.append(arcpy.Describe(dSet).extent) for dSet in datasetList]
+
+    intersectLLX = max([aExt.XMin for aExt in extentsList])
+    intersectLLY = max([aExt.YMin for aExt in extentsList])
+    intersectURX = min([aExt.XMax for aExt in extentsList])
+    intersectURY = min([aExt.YMax for aExt in extentsList])
+  
+    return (intersectLLX,intersectLLY,intersectURX,intersectURY)
 
 
     
