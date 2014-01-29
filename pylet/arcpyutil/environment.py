@@ -10,7 +10,10 @@ import os
 import string
 import tempfile
 import arcpy
+
 from arcpy import env
+from ATtILA2 import errors
+from ATtILA2.constants import errorConstants
 
 
 def getWorkspaceForIntermediates(gdbFilename, fallBackWorkspace=None):
@@ -162,15 +165,15 @@ def getAlignedExtent(inGrid, inCellSize, datasetList):
     datasetList.append(inGrid)
     
     # intersect the two extents
-    coords = getIntersectionOfExtents(datasetList)
+    intersectExtent = getIntersectionOfExtents(datasetList)
 
     # take the polygon's extent and shift its lower left point out to align with the grid's cell boundaries
-    newLLX = (((coords[0] - gridExtent.XMin)//cellSize) * cellSize) + gridExtent.XMin
-    newLLY = (((coords[1] - gridExtent.YMin)//cellSize) * cellSize) + gridExtent.YMin
+    newLLX = (((intersectExtent.XMin - gridExtent.XMin)//cellSize) * cellSize) + gridExtent.XMin
+    newLLY = (((intersectExtent.YMin - gridExtent.YMin)//cellSize) * cellSize) + gridExtent.YMin
 
     # take the polygon's extent and shift its upper right point out to align with the grid's cell boundaries 
-    newURX = ((math.ceil(((coords[2] - gridExtent.XMin) / cellSize))) * cellSize) + gridExtent.XMin
-    newURY = ((math.ceil(((coords[3] - gridExtent.YMin) / cellSize))) * cellSize) + gridExtent.YMin
+    newURX = ((math.ceil(((intersectExtent.XMax - gridExtent.XMin) / cellSize))) * cellSize) + gridExtent.XMin
+    newURY = ((math.ceil(((intersectExtent.YMax - gridExtent.YMin) / cellSize))) * cellSize) + gridExtent.YMin
   
     alignedExtent = arcpy.Extent(newLLX,newLLY,newURX,newURY)
     return alignedExtent
@@ -186,8 +189,13 @@ def getIntersectionOfExtents(datasetList):
     intersectLLY = max([aExt.YMin for aExt in extentsList])
     intersectURX = min([aExt.XMax for aExt in extentsList])
     intersectURY = min([aExt.YMax for aExt in extentsList])
-  
-    return (intersectLLX,intersectLLY,intersectURX,intersectURY)
+    
+    # check to see if extents overlapp
+    try:
+        intersectExtent = arcpy.Extent(intersectLLX,intersectLLY,intersectURX,intersectURY)
+        return intersectExtent
+    except:
+        raise errors.attilaException(errorConstants.nonOverlappingExtentsError)
 
 
     
