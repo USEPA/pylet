@@ -43,3 +43,12 @@ XmlAttributeFilter = "filter"
 XmlAttributeValue = "value"
 XmlAttributeFieldName = "fieldName"
 XmlAttributeAPMethod = "apMethod"
+
+# XML Validation Attributes
+XsdFilename = 'LCCSchema_v2.xsd'
+XmlAttilaNamespace = 'lcc'
+XmlSchemaNamespace = 'http://www.w3.org/2001/XMLSchema-instance'
+ItemsRootAttribute1 = {'xmlns:xsi': XmlSchemaNamespace}
+ItemsRootAttribute2 = {'xmlns':XmlAttilaNamespace}
+ItemsRootAttribute3 = {'xsi:noNamespaceSchemaLocation':XsdFilename}
+XmlValidation = [ItemsRootAttribute1, ItemsRootAttribute2, ItemsRootAttribute3]
