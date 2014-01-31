@@ -1062,7 +1062,7 @@ class LandCoverCoefficient(object):
     value = ""
     
     #: The Per Unit Area/Percentage Field
-    apMethod = ""
+    calcMethod = ""
     
     
     def __init__(self, coefficientNode=None):
@@ -1086,25 +1086,25 @@ class LandCoverCoefficient(object):
         self.coefId = str(coefficientNode.getAttribute(constants.XmlAttributeId))
         self.name = str(coefficientNode.getAttribute(constants.XmlAttributeName))
         self.fieldName = str(coefficientNode.getAttribute(constants.XmlAttributeFieldName))
-        self.apMethod = str(coefficientNode.getAttribute(constants.XmlAttributeAPMethod))
+        self.calcMethod = str(coefficientNode.getAttribute(constants.XmlAttributeCalcMethod))
         
         try:
             self.value = float(coefficientNode.getAttribute(constants.XmlAttributeValue))
         except:
             self.value = 0.0
 
-    def populateCoefficient(self, passedCoefId, passedName, passedFieldName, passedAPMethod):
+    def populateCoefficient(self, passedCoefId, passedName, passedFieldName, passedCalcMethod):
         self.coefId = str(passedCoefId)
         self.name = str(passedName)
         self.fieldName = str(passedFieldName)
-        self.apMethod = str(passedAPMethod)
+        self.calcMethod = str(passedCalcMethod)
     
     def deepCopyCoefficient(self,originalLccObject):
         
         self.coefId = copy.deepcopy(originalLccObject.coefId)
         self.name = copy.deepcopy(originalLccObject.name)
         self.fieldName = copy.deepcopy(originalLccObject.fieldName)
-        self.apMethod = copy.deepcopy(originalLccObject.apMethod)
+        self.calcMethod = copy.deepcopy(originalLccObject.calcMethod)
         
     def populateCoefficientValue(self, passedValue):
         self.value = float(passedValue)

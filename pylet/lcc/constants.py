@@ -42,7 +42,7 @@ XmlAttributeCaemField = "caemField"
 XmlAttributeFilter = "filter"
 XmlAttributeValue = "value"
 XmlAttributeFieldName = "fieldName"
-XmlAttributeAPMethod = "apMethod"
+XmlAttributeCalcMethod = "method"
 
 # XML Validation Attributes
 XsdFilename = 'LCCSchema_v2.xsd'
