@@ -42,6 +42,48 @@ def getIdAreaDict(polyFc, keyField, spatialRef):
     return zoneAreaDict
 
 
+def getMultiPartIdAreaDict(polyFc, keyField, spatialRef):
+    """ Get a dictionary with polygon areas by an id taken from a specified field. Supports duplicate id values.
+
+        **Description:**
+        
+        For the input polygon feature class, a dictionary with the keyField as the retrieval key and polygon area as 
+        the associated value.  The polygon area will be in the same units as the provided spatial reference.  Check 
+        are made for existing keys. If a duplicate key is found, the area for the current polygon is added to the
+        existing area value.
+        
+        
+        **Arguments:**
+        
+        * *polyFc* - Polygon Feature Class
+        * *keyField* - Unique ID field
+        * *spatialRef* - Spatial Reference Object
+        
+        
+        **Returns:** 
+        
+        * dict - The item from keyField is the key and shape.area is the value
+
+        
+    """    
+
+
+    SHAPE_FIELD_NAME = "Shape"
+    zoneAreaDict = {}
+    area = 0
+    
+    rows = arcpy.SearchCursor(polyFc, '', spatialRef)
+    for row in rows:
+        key = row.getValue(keyField)
+        area = row.getValue(SHAPE_FIELD_NAME).area
+        if key in zoneAreaDict:
+            area = area + zoneAreaDict[key]
+
+        zoneAreaDict[key] = area
+
+    return zoneAreaDict
+
+
 def findOverlaps(polyFc):
     """ Get the OID values for polygon features that have areas of overlap with other polygons in the same theme.
         **Description:**

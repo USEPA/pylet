@@ -102,6 +102,8 @@ def getBufferedExtent(inPoly, inGrid, inCellSize, inWidth=None):
         and buffers it out to a specified distance and aligns that extent to the origin of the input
         input grid. If no specified distance is supplied, the buffer distance is one cell width. This new 
         extent should avoid edge errors with the pff or the edge/core metrics. 
+        
+        As extents are in map units, all inputs must be in the same projection.
        
       
     **Arguments:**
@@ -139,6 +141,8 @@ def getAlignedExtent(inGrid, inCellSize, datasetList):
              
         This function finds the extent rectangle of the area of intersection of all inputs themes including the inGrid,
         and adjusts its edges to align to the cell boundaries of the inGrid. 
+        
+        As extents are in map units, all inputs must be in the same projection.
        
       
     **Arguments:**
@@ -178,10 +182,29 @@ def getAlignedExtent(inGrid, inCellSize, datasetList):
     
     
 def getIntersectionOfExtents(datasetList):
-    """ Determines the intersection rectangle of the input themes. Returns its lower left and upper right coordinates. """
+    """ Determines the intersection rectangle of the input themes. Returns its lower left and upper right coordinates.
+    
+    **Description:**
+             
+        This function finds the x- and y-coordinates of lower left and upper right corners of the rectangle that 
+        delineates the area of intersection of all inputs. 
+        
+        As extents are in map units, all inputs must be in the same projection. 
+       
+      
+    **Arguments:**
+        
+        * *datasetList* - List of feature and/or raster datasets         
+        
+    **Returns:**
+        
+        * tuple - (LLX, LLY, URX, URY) map coordinates
+    
+    """
 
     extentsList = []
     [extentsList.append(arcpy.Describe(dSet).extent) for dSet in datasetList]
+#    [arcpy.AddMessage(aExt.XMin) for aExt in extentsList]
 
     intersectLLX = max([aExt.XMin for aExt in extentsList])
     intersectLLY = max([aExt.YMin for aExt in extentsList])
