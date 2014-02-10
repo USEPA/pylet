@@ -324,3 +324,36 @@ def getUniqueValues(table,field):
         del row
     del rows
     return valueList
+
+def checkForDuplicateValues(inFeatures, inField):
+    """Returns True if duplicate values are found in input field
+    
+    **Description:**
+
+    **Arguments:**
+        * *inFeatures* - feature class containing the field to be checked
+        * *inField* - input field to check for duplicate values
+        
+    **Returns:**
+        * *boolean* - True if duplicates are found
+    """
+    try:
+        # Get a count of the number of reporting units to give an accurate progress estimate.
+        n = int(arcpy.GetCount_management(inFeatures).getOutput(0))
+        uniqueValues = set()
+        Rows = arcpy.SearchCursor(inFeatures,"","",inField)
+        # For each reporting unit:
+        for row in Rows:
+            # Get the reporting unit ID
+            uniqueValues.add(row.getValue(inField))
+
+        if n > len(uniqueValues):
+            return True
+    
+    finally:
+        try:
+            # Clean up the search cursor object
+            del Rows
+            
+        except:
+            pass
