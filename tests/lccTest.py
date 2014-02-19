@@ -4,47 +4,114 @@
 ''' Testing for pylet.lcc subpackage
 
 '''
-
-import sys
+import os
 from glob import glob
 import pylet
 
-thisFilePath = sys.argv[0]
-testFilePath = glob(thisFilePath.split("tests")[0] + pylet.lcc.constants.PredefinedFileDirName + "\\*.lcc")[0]
 
-lccObj = pylet.lcc.LandCoverClassification(testFilePath)
+def main():
+    """"""
+    container = 'ATtILA2{0}ToolboxSource'.format(os.sep)
+    dirName = pylet.lcc.constants.PredefinedFileDirName
+    upOne = '..'
+    relPath = os.sep.join((upOne, upOne, container, dirName))
+    os.chdir(relPath)
+    
+    filePaths = glob('*.lcc')
+    print filePaths
+    
+    testLccFiles(filePaths)
+    
+def testLccFiles(filePaths):
+    """"""
+    
+    indent = "  "
+    
+    for filePath in filePaths:
+        lccObj = pylet.lcc.LandCoverClassification(filePath)
+    
+        print "METADATA"
+        print "  name:", lccObj.metadata.name
+        print "  description:", lccObj.metadata.description
+        print
+        
+        
+        print "ATTRIBUTES"
+        for key, value in lccObj.coefficients.iteritems():
+            assert isinstance(value, pylet.lcc.LandCoverCoefficient)
+            print indent, "key:", key
+            print indent, "coefId:", value.coefId
+            print indent, "fieldName:", value.fieldName 
+            print      
+        print
+        
+        
+        print "VALUES"
+        for key, value in lccObj.values.items():
+            print indent, "key:", key
+            print indent, "valueId:", value.valueId
+            print indent, "name:", value.name
+            print indent, "excluded:", value.excluded
+            print indent, "PHOSPHORUS:", value.getCoefficientValueById('PHOSPHORUS')
+            print indent, "NITROGEN:", value.getCoefficientValueById('NITROGEN')
+            print indent, "IMPERVIOUS:", value.getCoefficientValueById('IMPERVIOUS')
+            print
+        print 
+        
+        
+        print "CLASSES - NO HIERARCHY"
+        for classId, landCoverClass in lccObj.classes.items():
+            print indent, "key:", classId
+            print indent, "classId:", landCoverClass.classId
+            print indent, "name:", landCoverClass.name
+            print indent, "uniqueValueIds:", landCoverClass.uniqueValueIds
+            print indent, "uniqueClassIds:", landCoverClass.uniqueClassIds
+            try:
+                print indent, "parentClass:", landCoverClass.parentClass.classId
+            except:
+                print indent, "parentClass: None"
+                
+            print indent, "childClasses:", [childClass.classId for childClass in landCoverClass.childClasses]
+            print indent, "childValueIds:", landCoverClass.childValueIds
+            print
+        print
+        
+        print "CLASSES - HIERARCHY"
+        
+        def printDescendentClasses(landCoverClass, indentUnit, indentLevel):
+            
+            for childClass in landCoverClass.childClasses:
+                print indentUnit*indentLevel, childClass.classId
+                printDescendentClasses(childClass, indentUnit, indentLevel + 1)
+                
+                
+            
+        for topLevelClass in lccObj.classes.topLevelClasses:
+            print indent, topLevelClass.classId 
+            printDescendentClasses(topLevelClass, indent, 2)
+        print
+        
+        print "UNIQUE VALUES IN CLASSES"
+        print indent, lccObj.classes.getUniqueValueIds()
+        print
 
-print "METADATA"
-print "  name:", lccObj.metadata.name
-print "  description:", lccObj.metadata.description
+        print "INCLUDED/EXCLUDED VALUES"
+        print indent, "included:", lccObj.values.getIncludedValueIds()
+        print indent, "excluded:", lccObj.values.getExcludedValueIds()
+        print
 
-print
+        print "UNIQUE VALUES IN OBJECT"
+        print indent, "Top level unique value IDs without excludes:", lccObj.getUniqueValueIds()
+        print indent, "Top level unique value IDs with excludes:", lccObj.getUniqueValueIdsWithExcludes()
+        print
+        
+        print "---------------------------------------------------------------------------------"
+        print
+        
+    
+if __name__ == "__main__":
+    main()
+    
+    
 
-print "VALUES"
-for key, value in lccObj.values.items():
-    print "  {0:8}{1:8}  {2:40}{3:10}  {4}".format(key, value.valueId, value.name, value.excluded, value.attributes)
 
-print
-
-print "ALL CLASSES"
-for classId, landCoverClass in lccObj.classes.items():
-    print "  classId:{0:8}classId:{1:8}name:{2:40}{3}{4}{5}".format(classId, landCoverClass.classId, landCoverClass.name, landCoverClass.uniqueValueIds, landCoverClass.uniqueClassIds, landCoverClass.attributes)
-
-print
-
-print "UNIQUE VALUES IN CLASSES"
-print lccObj.classes.getUniqueValueIds()
-
-print
-
-print "INCLUDED/EXCLUDED VALUES"
-print "included:", lccObj.values.getIncludedValueIds()
-print "excluded:", lccObj.values.getExcludedValueIds()
-
-print
-
-print "UNIQUE VALUES IN OBJECT"
-print "Top level unique value IDs without excludes:", lccObj.getUniqueValueIds()
-print "Top level unique value IDs with excludes:", lccObj.getUniqueValueIdsWithExcludes()
-
-print
