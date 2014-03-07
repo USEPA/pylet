@@ -5,6 +5,7 @@
 
 import arcpy
 
+
 def getIdAreaDict(polyFc, keyField, spatialRef):
     """ Get a dictionary with polygon areas by an id taken from a specified field.
 
@@ -96,11 +97,16 @@ def findOverlaps(polyFc):
          **Returns:** 
          * set - A set of OID field values, a dictionary of overlaps, and OID field name
 """ 
-    
+    from pylet import arcpyutil
     overlapSet = set()
     overlapDict = {}
     
     oidField = arcpy.ListFields(polyFc, '', 'OID')[0]
+    
+    # Get a count of the number of reporting units to give an accurate progress estimate.
+    n = int(arcpy.GetCount_management(polyFc).getOutput(0))
+    # Initialize custom progress indicator
+    loopProgress = arcpyutil.messages.loopProgress(n)
     
     for row in arcpy.SearchCursor(polyFc, '', '', 'Shape; %s' % oidField.name):
         idlist = []
@@ -127,7 +133,8 @@ def findOverlaps(polyFc):
                 elif row.getValue(oidField.name) in overlapDict.keys():
                     idlist = overlapDict[row.getValue(oidField.name)]
                     idlist.append(row2.getValue(oidField.name))
-
+                    
+        loopProgress.update()
 
                 
 ##    print overlapDict
