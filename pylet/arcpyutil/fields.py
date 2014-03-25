@@ -293,6 +293,7 @@ def valueDelimiter(fieldType):
     if fieldType == 'String':
         # If the field type is string, enclose the value in single quotes
         def delimitValue(value):
+            value = value.replace("'", "''")
             return "'" + value + "'"
     else:
         # Otherwise the string is numeric, just convert it to a Python string type for concatenation with no quotes.
