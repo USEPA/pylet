@@ -10,7 +10,6 @@ A Python package for reuse across projects. Place as many reusable functions and
 
 Contacts
 --------
-Rose-Marie Moore, moore.rose-marie@epa.gov
 Donald Ebert, ebert.donald@epa.gov
 
 
