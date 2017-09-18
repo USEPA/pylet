@@ -3,7 +3,7 @@
     These constants are specific to .lcc XML files including the XML elements
     and attributes used to define the classification.
     
-    Last modified 12/09/13
+    Last modified 09/11/2017
 
 '''
 
@@ -14,7 +14,7 @@ PredefinedFileDirName = "LandCoverClassifications"
 UserDefinedOptionDescription = "User Defined"
 AutoSaveFileName = "autoSave.xml"
 TimeInterval = 5000     # 1 sec = 1000 millseconds
-overwriteFieldList = ['caemField', 'lcospField', 'lcpField', 'rlcpField', 'splcpField']
+overwriteFieldList = ['caemField', 'lcospField', 'lcpField', 'pmField', 'rlcpField', 'splcpField']
 
 
 # XML Elements
@@ -39,6 +39,7 @@ XmlAttributeRlcpField = "rlcpField"
 XmlAttributeLcospField = "lcospField"
 XmlAttributeSplcpField = "splcpField"
 XmlAttributeCaemField = "caemField"
+XmlAttributePmField = "pmField"
 XmlAttributeFilter = "filter"
 XmlAttributeValue = "value"
 XmlAttributeFieldName = "fieldName"
