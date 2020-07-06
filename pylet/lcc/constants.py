@@ -46,7 +46,7 @@ XmlAttributeFieldName = "fieldName"
 XmlAttributeCalcMethod = "method"
 
 # XML Validation Attributes
-XsdFilename = 'LCCSchema_v2.xsd'
+XsdFilename = 'LCCSchema_v3.xsd'
 XmlAttilaNamespace = 'lcc'
 XmlSchemaNamespace = 'http://www.w3.org/2001/XMLSchema-instance'
 ItemsRootAttribute1 = {'xmlns:xsi': XmlSchemaNamespace}
